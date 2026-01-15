@@ -9,9 +9,11 @@ import {
   Settings,
   Building,
   Upload,
+  Heart,
 } from "lucide-react";
 import { requireRole, checkPasswordChange } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 type Props = {
   children: React.ReactNode;
@@ -34,11 +36,12 @@ export default async function AdminLayout({ children, params }: Props) {
   const navItems = [
     { href: "/admin/dashboard", icon: LayoutDashboard, label: t("dashboard") },
     { href: "/admin/students", icon: Users, label: t("students") },
-    { href: "/admin/units", icon: Building, label: "Đơn vị" },
+    { href: "/admin/units", icon: Building, label: t("units") },
     { href: "/admin/leaders", icon: UserCheck, label: t("leaders") },
+    { href: "/admin/parents", icon: Heart, label: t("parents") },
     { href: "/admin/events", icon: Calendar, label: t("events") },
     { href: "/admin/announcements", icon: Bell, label: t("announcements") },
-    { href: "/admin/import", icon: Upload, label: "Nhập dữ liệu" },
+    { href: "/admin/import", icon: Upload, label: t("import") },
   ];
 
   return (
@@ -48,8 +51,11 @@ export default async function AdminLayout({ children, params }: Props) {
         <div className="flex flex-col h-full">
           {/* Logo & User Info */}
           <div className="p-6 border-b">
-            <h1 className="text-xl font-bold">{common("appName")}</h1>
-            <p className="text-sm text-muted-foreground truncate">
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold">{common("appName")}</h1>
+              <LanguageSwitcher />
+            </div>
+            <p className="text-sm text-muted-foreground truncate mt-1">
               {session.user.email}
             </p>
           </div>

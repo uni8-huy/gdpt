@@ -17,15 +17,17 @@ import {
   type EventFormData,
 } from "@/lib/actions/event-actions";
 
-const eventSchema = z.object({
-  title: z.string().min(2, "Tiêu đề phải có ít nhất 2 ký tự"),
-  description: z.string().optional(),
-  startDate: z.string().min(1, "Vui lòng chọn ngày bắt đầu"),
-  endDate: z.string().optional(),
-  location: z.string().optional(),
-  isPublic: z.boolean(),
-  targetRoles: z.array(z.enum(["ADMIN", "LEADER", "PARENT"])),
-});
+function createEventSchema(titleRequired: string, selectDate: string) {
+  return z.object({
+    title: z.string().min(2, titleRequired),
+    description: z.string().optional(),
+    startDate: z.string().min(1, selectDate),
+    endDate: z.string().optional(),
+    location: z.string().optional(),
+    isPublic: z.boolean(),
+    targetRoles: z.array(z.enum(["ADMIN", "LEADER", "PARENT"])),
+  });
+}
 
 type Event = {
   id: string;
@@ -41,6 +43,33 @@ type Event = {
 interface EventFormProps {
   event?: Event;
   locale: string;
+  translations: {
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    location: string;
+    isPublic: string;
+    targetRoles: string;
+    eventInfo: string;
+    displaySettings: string;
+    publicOnHome: string;
+    titleRequired: string;
+    selectDate: string;
+    roles: {
+      admin: string;
+      leader: string;
+      parent: string;
+    };
+    common: {
+      save: string;
+      saving: string;
+      update: string;
+      create: string;
+      cancel: string;
+      tryAgain: string;
+    };
+  };
 }
 
 function formatDateTimeForInput(date: Date | null): string {
@@ -49,16 +78,18 @@ function formatDateTimeForInput(date: Date | null): string {
   return d.toISOString().slice(0, 16);
 }
 
-const ROLES = [
-  { value: "ADMIN", label: "Quản trị viên" },
-  { value: "LEADER", label: "Huynh trưởng" },
-  { value: "PARENT", label: "Phụ huynh" },
-] as const;
-
-export function EventForm({ event, locale }: EventFormProps) {
+export function EventForm({ event, locale, translations: t }: EventFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const ROLES = [
+    { value: "ADMIN" as const, label: t.roles.admin },
+    { value: "LEADER" as const, label: t.roles.leader },
+    { value: "PARENT" as const, label: t.roles.parent },
+  ];
+
+  const eventSchema = createEventSchema(t.titleRequired, t.selectDate);
 
   const {
     register,
@@ -102,7 +133,7 @@ export function EventForm({ event, locale }: EventFormProps) {
       router.push(`/${locale}/admin/events`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Có lỗi xảy ra. Vui lòng thử lại.");
+      setError(err instanceof Error ? err.message : t.common.tryAgain);
       setIsLoading(false);
     }
   };
@@ -117,11 +148,11 @@ export function EventForm({ event, locale }: EventFormProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin sự kiện</CardTitle>
+          <CardTitle>{t.eventInfo}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Tiêu đề *</Label>
+            <Label htmlFor="title">{t.title} *</Label>
             <Input id="title" {...register("title")} disabled={isLoading} />
             {errors.title && (
               <p className="text-sm text-destructive">{errors.title.message}</p>
@@ -129,7 +160,7 @@ export function EventForm({ event, locale }: EventFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Mô tả</Label>
+            <Label htmlFor="description">{t.description}</Label>
             <Textarea
               id="description"
               {...register("description")}
@@ -140,7 +171,7 @@ export function EventForm({ event, locale }: EventFormProps) {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="startDate">Thời gian bắt đầu *</Label>
+              <Label htmlFor="startDate">{t.startDate} *</Label>
               <Input
                 id="startDate"
                 type="datetime-local"
@@ -153,7 +184,7 @@ export function EventForm({ event, locale }: EventFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endDate">Thời gian kết thúc</Label>
+              <Label htmlFor="endDate">{t.endDate}</Label>
               <Input
                 id="endDate"
                 type="datetime-local"
@@ -164,7 +195,7 @@ export function EventForm({ event, locale }: EventFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Địa điểm</Label>
+            <Label htmlFor="location">{t.location}</Label>
             <Input id="location" {...register("location")} disabled={isLoading} />
           </div>
         </CardContent>
@@ -172,7 +203,7 @@ export function EventForm({ event, locale }: EventFormProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Cài đặt hiển thị</CardTitle>
+          <CardTitle>{t.displaySettings}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-2">
@@ -182,11 +213,11 @@ export function EventForm({ event, locale }: EventFormProps) {
               onCheckedChange={(checked) => setValue("isPublic", checked === true)}
               disabled={isLoading}
             />
-            <Label htmlFor="isPublic">Hiển thị công khai trên trang chủ</Label>
+            <Label htmlFor="isPublic">{t.publicOnHome}</Label>
           </div>
 
           <div className="space-y-2">
-            <Label>Đối tượng nhận thông báo</Label>
+            <Label>{t.targetRoles}</Label>
             <div className="flex flex-wrap gap-4">
               {ROLES.map((role) => (
                 <div key={role.value} className="flex items-center gap-2">
@@ -206,7 +237,7 @@ export function EventForm({ event, locale }: EventFormProps) {
 
       <div className="flex gap-4">
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Đang lưu..." : event ? "Cập nhật" : "Thêm mới"}
+          {isLoading ? t.common.saving : event ? t.common.update : t.common.create}
         </Button>
         <Button
           type="button"
@@ -214,7 +245,7 @@ export function EventForm({ event, locale }: EventFormProps) {
           onClick={() => router.back()}
           disabled={isLoading}
         >
-          Hủy
+          {t.common.cancel}
         </Button>
       </div>
     </form>

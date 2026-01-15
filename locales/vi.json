@@ -2,7 +2,9 @@
   "common": {
     "appName": "GDPT",
     "appFullName": "Gia Đình Phật Tử",
+    "appDescription": "Nền tảng quản lý cộng đồng Gia Đình Phật Tử",
     "welcome": "Chào mừng",
+    "hello": "Xin chào",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "register": "Đăng ký",
@@ -12,24 +14,42 @@
     "submit": "Gửi",
     "cancel": "Hủy",
     "save": "Lưu",
+    "saving": "Đang lưu...",
     "delete": "Xóa",
+    "deleting": "Đang xóa...",
     "edit": "Sửa",
     "create": "Tạo mới",
+    "add": "Thêm",
+    "update": "Cập nhật",
     "search": "Tìm kiếm",
+    "searchPlaceholder": "Tìm theo tên...",
     "filter": "Lọc",
     "loading": "Đang tải...",
+    "importing": "Đang nhập...",
     "error": "Lỗi",
+    "unknownError": "Lỗi không xác định",
+    "tryAgain": "Có lỗi xảy ra. Vui lòng thử lại.",
     "success": "Thành công",
     "noData": "Không có dữ liệu",
-    "actions": "Thao tác"
+    "actions": "Thao tác",
+    "total": "Tổng số",
+    "current": "Hiện tại",
+    "view": "Xem",
+    "back": "Quay lại",
+    "male": "Nam",
+    "female": "Nữ"
   },
   "nav": {
     "dashboard": "Trang chủ",
     "students": "Đoàn sinh",
+    "units": "Đơn vị",
     "leaders": "Huynh trưởng",
     "parents": "Phụ huynh",
+    "children": "Con em",
     "events": "Sự kiện",
     "announcements": "Thông báo",
+    "import": "Nhập dữ liệu",
+    "contact": "Liên hệ",
     "giapha": "Gia Phả",
     "settings": "Cài đặt",
     "profile": "Hồ sơ"
@@ -47,12 +67,24 @@
     "currentPassword": "Mật khẩu hiện tại",
     "passwordChanged": "Đổi mật khẩu thành công",
     "mustChangePassword": "Bạn cần đổi mật khẩu trước khi tiếp tục",
-    "adminOnly": "Dành cho Quản trị viên"
+    "adminOnly": "Dành cho Quản trị viên",
+    "loginFailed": "Đăng nhập thất bại",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+    "passwordsNotMatch": "Mật khẩu không khớp",
+    "currentPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu"
   },
   "roles": {
     "admin": "Quản trị viên",
     "leader": "Huynh trưởng",
     "parent": "Phụ huynh"
+  },
+  "status": {
+    "active": "Đang hoạt động",
+    "inactive": "Nghỉ",
+    "activeStudent": "Đang sinh hoạt",
+    "inactiveStudent": "Nghỉ sinh hoạt"
   },
   "student": {
     "title": "Đoàn sinh",
@@ -63,6 +95,7 @@
     "unit": "Đơn vị",
     "class": "Lớp",
     "status": "Trạng thái",
+    "notes": "Ghi chú",
     "active": "Đang sinh hoạt",
     "inactive": "Nghỉ sinh hoạt"
   },
@@ -72,26 +105,138 @@
     "name": "Họ và tên",
     "dharmaName": "Pháp danh",
     "yearOfBirth": "Năm sinh",
+    "fullDateOfBirth": "Ngày sinh đầy đủ",
     "unit": "Đơn vị",
     "level": "Cấp/Bậc",
     "joinDate": "Ngày gia nhập",
+    "gdptJoinDate": "Ngày gia nhập GĐPT",
     "quyY": "Quy Y",
+    "quyYDate": "Ngày Quy Y",
+    "quyYName": "Pháp danh Quy Y",
     "training": "Bồi dưỡng",
-    "timeline": "Quá trình sinh hoạt"
+    "timeline": "Quá trình sinh hoạt",
+    "placeOfOrigin": "Quê quán",
+    "education": "Học vấn",
+    "occupation": "Nghề nghiệp",
+    "phone": "Điện thoại",
+    "address": "Địa chỉ",
+    "notes": "Ghi chú",
+    "selectAccount": "Chọn tài khoản để liên kết",
+    "noAvailableUsers": "Không có tài khoản khả dụng. Tất cả người dùng đã có hồ sơ huynh trưởng.",
+    "basicInfo": "Thông tin cơ bản",
+    "gdptInfo": "Thông tin GĐPT & Quy Y",
+    "contactInfo": "Thông tin liên hệ",
+    "educationWork": "Học vấn & Nghề nghiệp",
+    "selectUnit": "Chọn đơn vị",
+    "selectLevel": "Chọn bậc",
+    "notDetermined": "Chưa xác định",
+    "role": "Vai trò",
+    "startYear": "Năm bắt đầu",
+    "endYear": "Năm kết thúc",
+    "campName": "Tên trại",
+    "region": "Khu vực",
+    "year": "Năm",
+    "deleteConfirm": "Bạn có chắc muốn xóa huynh trưởng này?",
+    "deleteWarning": "Hành động này không thể hoàn tác.",
+    "noProfile": "Bạn chưa có hồ sơ huynh trưởng. Vui lòng liên hệ Ban Điều Hành.",
+    "noStudentsInUnit": "Chưa có đoàn sinh trong đơn vị",
+    "studentsInUnit": "đoàn sinh đang sinh hoạt",
+    "phases": "giai đoạn",
+    "camps": "trại"
   },
   "event": {
     "title": "Sự kiện",
+    "addNew": "Thêm sự kiện",
     "name": "Tên sự kiện",
     "date": "Ngày",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
     "startTime": "Giờ bắt đầu",
     "endTime": "Giờ kết thúc",
     "location": "Địa điểm",
-    "description": "Mô tả"
+    "description": "Mô tả",
+    "isPublic": "Công khai",
+    "targetRoles": "Đối tượng",
+    "selectDate": "Vui lòng chọn ngày bắt đầu",
+    "titleRequired": "Tiêu đề phải có ít nhất 2 ký tự",
+    "eventInfo": "Thông tin sự kiện",
+    "displaySettings": "Cài đặt hiển thị",
+    "publicOnHome": "Hiển thị công khai trên trang chủ"
   },
   "announcement": {
     "title": "Thông báo",
+    "addNew": "Thêm thông báo",
     "content": "Nội dung",
     "publishedAt": "Ngày đăng",
-    "author": "Người đăng"
+    "author": "Người đăng",
+    "isPublished": "Đã đăng",
+    "targetRoles": "Đối tượng"
+  },
+  "unit": {
+    "title": "Đơn vị",
+    "addNew": "Thêm đơn vị",
+    "name": "Tên đơn vị",
+    "description": "Mô tả",
+    "parentUnit": "Đơn vị cha"
+  },
+  "import": {
+    "title": "Nhập dữ liệu",
+    "description": "Nhập dữ liệu từ file CSV",
+    "selectType": "Chọn loại dữ liệu",
+    "selectFile": "Chọn file CSV",
+    "importButton": "Nhập dữ liệu",
+    "instructions": "Hướng dẫn",
+    "step1": "1. Tải file CSV mẫu",
+    "step2": "2. Điền dữ liệu theo mẫu",
+    "step3": "3. Lưu file CSV",
+    "step4": "4. Tải file CSV lên và nhấn \"Nhập dữ liệu\""
+  },
+  "admin": {
+    "title": "Quản trị",
+    "dashboard": {
+      "title": "Trang chủ",
+      "welcome": "Chào mừng đến với trang quản trị",
+      "stats": {
+        "users": "Người dùng",
+        "usersDesc": "Tổng số tài khoản",
+        "students": "Đoàn sinh",
+        "studentsDesc": "Đang sinh hoạt",
+        "leaders": "Huynh trưởng",
+        "leadersDesc": "Đang hoạt động",
+        "events": "Sự kiện",
+        "eventsDesc": "Tổng số sự kiện"
+      }
+    },
+    "parents": {
+      "title": "Quản lý Phụ huynh",
+      "description": "Liên kết phụ huynh với đoàn sinh",
+      "studentsList": "Danh sách đoàn sinh",
+      "linkParent": "Liên kết phụ huynh",
+      "currentParents": "Phụ huynh hiện tại",
+      "addParent": "Thêm phụ huynh",
+      "selectParent": "Chọn phụ huynh...",
+      "selectStudentPrompt": "Chọn một đoàn sinh để xem/thêm phụ huynh",
+      "linkButton": "Liên kết",
+      "unlink": "Hủy liên kết",
+      "relationParent": "Cha/Mẹ",
+      "relationGuardian": "Người giám hộ",
+      "relationGrandparent": "Ông/Bà",
+      "relationOther": "Khác"
+    }
+  },
+  "parent": {
+    "title": "Phụ huynh",
+    "children": {
+      "title": "Con em",
+      "description": "Thông tin chi tiết về con em đang sinh hoạt tại Gia Đình Phật Tử",
+      "noChildren": "Chưa có thông tin con em được liên kết với tài khoản của bạn.",
+      "contactAdmin": "Vui lòng liên hệ Ban Điều Hành để được hỗ trợ.",
+      "age": "Tuổi",
+      "yearsOld": "tuổi"
+    },
+    "contact": {
+      "title": "Liên hệ",
+      "description": "Thông tin liên hệ"
+    }
   }
 }

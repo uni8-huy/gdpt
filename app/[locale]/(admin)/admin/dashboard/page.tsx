@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { db } from "@/lib/db";
 
@@ -22,6 +21,7 @@ export default async function AdminDashboardPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("nav");
+  const stats = await getTranslations("admin.dashboard.stats");
 
   // Fetch stats from database
   const [usersCount, studentsCount, leadersCount, eventsCount] =
@@ -45,22 +45,16 @@ export default async function AdminDashboardPage({ params }: Props) {
           events: eventsCount,
         }}
         labels={{
-          users: "Người dùng",
-          students: t("students"),
-          leaders: t("leaders"),
-          events: t("events"),
+          users: stats("users"),
+          usersDesc: stats("usersDesc"),
+          students: stats("students"),
+          studentsDesc: stats("studentsDesc"),
+          leaders: stats("leaders"),
+          leadersDesc: stats("leadersDesc"),
+          events: stats("events"),
+          eventsDesc: stats("eventsDesc"),
         }}
       />
-
-      {/* Placeholder for recent activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Hoạt động gần đây</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Chưa có hoạt động</p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

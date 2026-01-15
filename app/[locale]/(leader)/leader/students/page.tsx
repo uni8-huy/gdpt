@@ -13,13 +13,14 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "nav" });
+  const roles = await getTranslations({ locale, namespace: "roles" });
   return {
-    title: `${t("students")} - Huynh trưởng`,
+    title: `${t("students")} - ${roles("leader")}`,
   };
 }
 
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("vi-VN").format(new Date(date));
+function formatDate(date: Date, locale: string) {
+  return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US").format(new Date(date));
 }
 
 function calculateAge(dateOfBirth: Date): number {
@@ -37,6 +38,9 @@ export default async function LeaderStudentsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("student");
+  const leader = await getTranslations("leader");
+  const common = await getTranslations("common");
+  const status = await getTranslations("status");
 
   const session = await requireRole(["LEADER", "ADMIN"], locale);
 
@@ -52,9 +56,7 @@ export default async function LeaderStudentsPage({ params }: Props) {
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
-              Bạn chưa có hồ sơ huynh trưởng. Vui lòng liên hệ Ban Điều Hành.
-            </p>
+            <p className="text-muted-foreground">{leader("noProfile")}</p>
           </CardContent>
         </Card>
       </div>
@@ -75,14 +77,14 @@ export default async function LeaderStudentsPage({ params }: Props) {
       <div>
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground">
-          Đơn vị: {leaderProfile.unit.name} • {activeStudents.length} đoàn sinh đang sinh hoạt
+          {t("unit")}: {leaderProfile.unit.name} • {activeStudents.length} {leader("studentsInUnit")}
         </p>
       </div>
 
       {students.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">Chưa có đoàn sinh trong đơn vị</p>
+            <p className="text-muted-foreground">{leader("noStudentsInUnit")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -92,31 +94,31 @@ export default async function LeaderStudentsPage({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  Đang sinh hoạt
+                  {status("activeStudent")}
                   <Badge variant="success">{activeStudents.length}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {activeStudents.map((student) => (
+                  {activeStudents.map((studentData) => (
                     <div
-                      key={student.id}
+                      key={studentData.id}
                       className="border rounded-lg p-4 space-y-2"
                     >
-                      <div className="font-medium">{student.name}</div>
-                      {student.dharmaName && (
+                      <div className="font-medium">{studentData.name}</div>
+                      {studentData.dharmaName && (
                         <div className="text-sm text-muted-foreground">
-                          Pháp danh: {student.dharmaName}
+                          {t("dharmaName")}: {studentData.dharmaName}
                         </div>
                       )}
                       <div className="flex gap-2 text-sm text-muted-foreground">
-                        <span>{calculateAge(student.dateOfBirth)} tuổi</span>
+                        <span>{calculateAge(studentData.dateOfBirth)} {locale === "vi" ? "tuổi" : "y/o"}</span>
                         <span>•</span>
-                        <span>{student.gender === "MALE" ? "Nam" : "Nữ"}</span>
+                        <span>{studentData.gender === "MALE" ? common("male") : common("female")}</span>
                       </div>
-                      {student.className && (
+                      {studentData.className && (
                         <Badge variant="outline" className="text-xs">
-                          {student.className}
+                          {studentData.className}
                         </Badge>
                       )}
                     </div>
@@ -131,27 +133,27 @@ export default async function LeaderStudentsPage({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  Nghỉ sinh hoạt
+                  {status("inactiveStudent")}
                   <Badge variant="secondary">{inactiveStudents.length}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {inactiveStudents.map((student) => (
+                  {inactiveStudents.map((studentData) => (
                     <div
-                      key={student.id}
+                      key={studentData.id}
                       className="border rounded-lg p-4 space-y-2 opacity-70"
                     >
-                      <div className="font-medium">{student.name}</div>
-                      {student.dharmaName && (
+                      <div className="font-medium">{studentData.name}</div>
+                      {studentData.dharmaName && (
                         <div className="text-sm text-muted-foreground">
-                          Pháp danh: {student.dharmaName}
+                          {t("dharmaName")}: {studentData.dharmaName}
                         </div>
                       )}
                       <div className="flex gap-2 text-sm text-muted-foreground">
-                        <span>{calculateAge(student.dateOfBirth)} tuổi</span>
+                        <span>{calculateAge(studentData.dateOfBirth)} {locale === "vi" ? "tuổi" : "y/o"}</span>
                         <span>•</span>
-                        <span>{student.gender === "MALE" ? "Nam" : "Nữ"}</span>
+                        <span>{studentData.gender === "MALE" ? common("male") : common("female")}</span>
                       </div>
                     </div>
                   ))}

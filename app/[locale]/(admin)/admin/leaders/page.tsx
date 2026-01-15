@@ -1,10 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/admin/data-table";
 import { Link } from "@/i18n/navigation";
-import { columns } from "./columns";
 import { getLeaders } from "@/lib/actions/leader-actions";
+import { LeadersDataTable } from "./leaders-data-table";
 
 export const dynamic = "force-dynamic";
 
@@ -24,30 +23,42 @@ export default async function LeadersPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("leader");
+  const common = await getTranslations("common");
+  const status = await getTranslations("status");
 
   const leaders = await getLeaders();
+
+  const translations = {
+    name: t("name"),
+    dharmaName: t("dharmaName"),
+    yearOfBirth: t("yearOfBirth"),
+    unit: t("unit"),
+    level: t("level"),
+    timeline: t("timeline"),
+    training: t("training"),
+    status: common("current"),
+    active: status("active"),
+    inactive: status("inactive"),
+    phases: t("phases"),
+    camps: t("camps"),
+    addNew: t("addNew"),
+    searchPlaceholder: common("searchPlaceholder"),
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            Quản lý thông tin Gia Phả huynh trưởng
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
         <Button asChild>
           <Link href="/admin/leaders/new">
             <Plus className="mr-2 h-4 w-4" />
-            Thêm huynh trưởng
+            {translations.addNew}
           </Link>
         </Button>
       </div>
-      <DataTable
-        columns={columns}
+      <LeadersDataTable
         data={leaders}
-        searchKey="name"
-        searchPlaceholder="Tìm theo tên..."
+        translations={translations}
       />
     </div>
   );

@@ -6,6 +6,12 @@ import { db } from "./db";
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL,
+  trustedOrigins: process.env.TRUSTED_ORIGINS?.split(",") || [
+    "http://localhost:4004",
+    "http://localhost:3000",
+    "http://127.0.0.1:4004",
+    "http://10.0.0.111:4004", // Local network access
+  ],
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),

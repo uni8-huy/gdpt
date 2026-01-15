@@ -2,7 +2,9 @@
   "common": {
     "appName": "GDPT",
     "appFullName": "Buddhist Youth Family",
+    "appDescription": "Community Management Platform for Buddhist Youth Family",
     "welcome": "Welcome",
+    "hello": "Hello",
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
@@ -12,24 +14,42 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "save": "Save",
+    "saving": "Saving...",
     "delete": "Delete",
+    "deleting": "Deleting...",
     "edit": "Edit",
     "create": "Create",
+    "add": "Add",
+    "update": "Update",
     "search": "Search",
+    "searchPlaceholder": "Search by name...",
     "filter": "Filter",
     "loading": "Loading...",
+    "importing": "Importing...",
     "error": "Error",
+    "unknownError": "Unknown error",
+    "tryAgain": "An error occurred. Please try again.",
     "success": "Success",
     "noData": "No data",
-    "actions": "Actions"
+    "actions": "Actions",
+    "total": "Total",
+    "current": "Current",
+    "view": "View",
+    "back": "Back",
+    "male": "Male",
+    "female": "Female"
   },
   "nav": {
     "dashboard": "Dashboard",
     "students": "Students",
+    "units": "Units",
     "leaders": "Youth Leaders",
     "parents": "Parents",
+    "children": "My Children",
     "events": "Events",
     "announcements": "Announcements",
+    "import": "Import Data",
+    "contact": "Contact",
     "giapha": "Genealogy",
     "settings": "Settings",
     "profile": "Profile"
@@ -47,12 +67,24 @@
     "currentPassword": "Current Password",
     "passwordChanged": "Password changed successfully",
     "mustChangePassword": "You must change your password before continuing",
-    "adminOnly": "Admin Only"
+    "adminOnly": "Admin Only",
+    "loginFailed": "Login failed",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordsNotMatch": "Passwords do not match",
+    "currentPasswordRequired": "Current password is required",
+    "confirmPasswordRequired": "Please confirm your password"
   },
   "roles": {
     "admin": "Administrator",
     "leader": "Youth Leader",
     "parent": "Parent"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "activeStudent": "Active",
+    "inactiveStudent": "Inactive"
   },
   "student": {
     "title": "Students",
@@ -63,6 +95,7 @@
     "unit": "Unit",
     "class": "Class",
     "status": "Status",
+    "notes": "Notes",
     "active": "Active",
     "inactive": "Inactive"
   },
@@ -72,26 +105,138 @@
     "name": "Full Name",
     "dharmaName": "Dharma Name",
     "yearOfBirth": "Year of Birth",
+    "fullDateOfBirth": "Full Date of Birth",
     "unit": "Unit",
     "level": "Level",
     "joinDate": "Join Date",
+    "gdptJoinDate": "GDPT Join Date",
     "quyY": "Quy Y",
+    "quyYDate": "Quy Y Date",
+    "quyYName": "Quy Y Dharma Name",
     "training": "Training",
-    "timeline": "Activity Timeline"
+    "timeline": "Activity Timeline",
+    "placeOfOrigin": "Place of Origin",
+    "education": "Education",
+    "occupation": "Occupation",
+    "phone": "Phone",
+    "address": "Address",
+    "notes": "Notes",
+    "selectAccount": "Select account to link",
+    "noAvailableUsers": "No available accounts. All users already have a leader profile.",
+    "basicInfo": "Basic Information",
+    "gdptInfo": "GDPT & Quy Y Information",
+    "contactInfo": "Contact Information",
+    "educationWork": "Education & Work",
+    "selectUnit": "Select unit",
+    "selectLevel": "Select level",
+    "notDetermined": "Not determined",
+    "role": "Role",
+    "startYear": "Start Year",
+    "endYear": "End Year",
+    "campName": "Camp Name",
+    "region": "Region",
+    "year": "Year",
+    "deleteConfirm": "Are you sure you want to delete this leader?",
+    "deleteWarning": "This action cannot be undone.",
+    "noProfile": "You don't have a leader profile yet. Please contact the Administration.",
+    "noStudentsInUnit": "No students in this unit yet",
+    "studentsInUnit": "active students",
+    "phases": "phases",
+    "camps": "camps"
   },
   "event": {
     "title": "Events",
+    "addNew": "Add Event",
     "name": "Event Name",
     "date": "Date",
+    "startDate": "Start Date",
+    "endDate": "End Date",
     "startTime": "Start Time",
     "endTime": "End Time",
     "location": "Location",
-    "description": "Description"
+    "description": "Description",
+    "isPublic": "Public",
+    "targetRoles": "Target Audience",
+    "selectDate": "Please select a start date",
+    "titleRequired": "Title must be at least 2 characters",
+    "eventInfo": "Event Information",
+    "displaySettings": "Display Settings",
+    "publicOnHome": "Display publicly on homepage"
   },
   "announcement": {
     "title": "Announcements",
+    "addNew": "Add Announcement",
     "content": "Content",
     "publishedAt": "Published At",
-    "author": "Author"
+    "author": "Author",
+    "isPublished": "Published",
+    "targetRoles": "Target Audience"
+  },
+  "unit": {
+    "title": "Units",
+    "addNew": "Add Unit",
+    "name": "Unit Name",
+    "description": "Description",
+    "parentUnit": "Parent Unit"
+  },
+  "import": {
+    "title": "Import Data",
+    "description": "Import data from CSV file",
+    "selectType": "Select data type",
+    "selectFile": "Select CSV file",
+    "importButton": "Import Data",
+    "instructions": "Instructions",
+    "step1": "1. Download sample CSV file",
+    "step2": "2. Fill data according to template",
+    "step3": "3. Save CSV file",
+    "step4": "4. Upload CSV file and click \"Import Data\""
+  },
+  "admin": {
+    "title": "Admin",
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome to the admin dashboard",
+      "stats": {
+        "users": "Users",
+        "usersDesc": "Total accounts",
+        "students": "Students",
+        "studentsDesc": "Currently active",
+        "leaders": "Leaders",
+        "leadersDesc": "Currently active",
+        "events": "Events",
+        "eventsDesc": "Total events"
+      }
+    },
+    "parents": {
+      "title": "Parent Management",
+      "description": "Link parents to students",
+      "studentsList": "Students List",
+      "linkParent": "Link Parent",
+      "currentParents": "Current Parents",
+      "addParent": "Add Parent",
+      "selectParent": "Select parent...",
+      "selectStudentPrompt": "Select a student to view/add parents",
+      "linkButton": "Link",
+      "unlink": "Unlink",
+      "relationParent": "Parent",
+      "relationGuardian": "Guardian",
+      "relationGrandparent": "Grandparent",
+      "relationOther": "Other"
+    }
+  },
+  "parent": {
+    "title": "Parent",
+    "children": {
+      "title": "My Children",
+      "description": "Detailed information about your children participating in GDPT",
+      "noChildren": "No children linked to your account yet.",
+      "contactAdmin": "Please contact the Administration for assistance.",
+      "age": "Age",
+      "yearsOld": "years old"
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Contact information"
+    }
   }
 }

@@ -10,9 +10,12 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "parent.children" });
+  const roles = await getTranslations({ locale, namespace: "roles" });
   return {
-    title: "Con em - Phụ huynh",
+    title: `${t("title")} - ${roles("parent")}`,
   };
 }
 
@@ -27,8 +30,8 @@ function calculateAge(dateOfBirth: Date): number {
   return age;
 }
 
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("vi-VN").format(new Date(date));
+function formatDate(date: Date, locale: string) {
+  return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US").format(new Date(date));
 }
 
 export default async function ParentChildrenPage({ params }: Props) {
@@ -36,6 +39,10 @@ export default async function ParentChildrenPage({ params }: Props) {
   setRequestLocale(locale);
 
   const session = await requireRole(["PARENT", "ADMIN"], locale);
+  const t = await getTranslations("parent.children");
+  const student = await getTranslations("student");
+  const common = await getTranslations("common");
+  const status = await getTranslations("status");
 
   // Get parent's children with full details
   const parentStudents = await db.parentStudent.findMany({
@@ -50,25 +57,23 @@ export default async function ParentChildrenPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Con em</h1>
-        <p className="text-muted-foreground">
-          Thông tin chi tiết về con em đang sinh hoạt tại Gia Đình Phật Tử
-        </p>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("description")}</p>
       </div>
 
       {parentStudents.length > 0 ? (
         <div className="space-y-4">
-          {parentStudents.map(({ student, relation }) => (
-            <Card key={student.id}>
+          {parentStudents.map(({ student: studentData, relation }) => (
+            <Card key={studentData.id}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>{student.name}</CardTitle>
+                  <CardTitle>{studentData.name}</CardTitle>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">{relation}</Badge>
                     <Badge
-                      variant={student.status === "ACTIVE" ? "success" : "secondary"}
+                      variant={studentData.status === "ACTIVE" ? "success" : "secondary"}
                     >
-                      {student.status === "ACTIVE" ? "Đang sinh hoạt" : "Nghỉ"}
+                      {studentData.status === "ACTIVE" ? status("activeStudent") : status("inactiveStudent")}
                     </Badge>
                   </div>
                 </div>
@@ -76,42 +81,42 @@ export default async function ParentChildrenPage({ params }: Props) {
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-3">
-                    {student.dharmaName && (
+                    {studentData.dharmaName && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Pháp danh</span>
-                        <span>{student.dharmaName}</span>
+                        <span className="text-muted-foreground">{student("dharmaName")}</span>
+                        <span>{studentData.dharmaName}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Ngày sinh</span>
-                      <span>{formatDate(student.dateOfBirth)}</span>
+                      <span className="text-muted-foreground">{student("dateOfBirth")}</span>
+                      <span>{formatDate(studentData.dateOfBirth, locale)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Tuổi</span>
-                      <span>{calculateAge(student.dateOfBirth)} tuổi</span>
+                      <span className="text-muted-foreground">{t("age")}</span>
+                      <span>{calculateAge(studentData.dateOfBirth)} {t("yearsOld")}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Giới tính</span>
-                      <span>{student.gender === "MALE" ? "Nam" : "Nữ"}</span>
+                      <span className="text-muted-foreground">{student("gender")}</span>
+                      <span>{studentData.gender === "MALE" ? common("male") : common("female")}</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Đơn vị</span>
-                      <span>{student.unit.name}</span>
+                      <span className="text-muted-foreground">{student("unit")}</span>
+                      <span>{studentData.unit.name}</span>
                     </div>
-                    {student.className && (
+                    {studentData.className && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Lớp</span>
-                        <span>{student.className}</span>
+                        <span className="text-muted-foreground">{student("class")}</span>
+                        <span>{studentData.className}</span>
                       </div>
                     )}
                   </div>
                 </div>
-                {student.notes && (
+                {studentData.notes && (
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-sm text-muted-foreground">
-                      <span className="font-medium">Ghi chú:</span> {student.notes}
+                      <span className="font-medium">{student("notes")}:</span> {studentData.notes}
                     </p>
                   </div>
                 )}
@@ -122,12 +127,8 @@ export default async function ParentChildrenPage({ params }: Props) {
       ) : (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
-              Chưa có thông tin con em được liên kết với tài khoản của bạn.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Vui lòng liên hệ Ban Điều Hành để được hỗ trợ.
-            </p>
+            <p className="text-muted-foreground">{t("noChildren")}</p>
+            <p className="text-sm text-muted-foreground mt-2">{t("contactAdmin")}</p>
           </CardContent>
         </Card>
       )}

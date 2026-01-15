@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 type Props = {
   children: React.ReactNode;
@@ -28,10 +29,10 @@ export default async function ParentLayout({ children, params }: Props) {
 
   const navItems = [
     { href: "/parent/dashboard", icon: Home, label: t("dashboard") },
-    { href: "/parent/children", icon: Users, label: "Con em" },
+    { href: "/parent/children", icon: Users, label: t("children") },
     { href: "/parent/calendar", icon: Calendar, label: t("events") },
     { href: "/parent/announcements", icon: Bell, label: t("announcements") },
-    { href: "/parent/contact", icon: MessageCircle, label: "Liên hệ" },
+    { href: "/parent/contact", icon: MessageCircle, label: t("contact") },
   ];
 
   return (
@@ -40,20 +41,26 @@ export default async function ParentLayout({ children, params }: Props) {
       <header className="md:hidden border-b bg-card p-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold">{common("appName")}</h1>
-          <LogoutButton
-            label=""
-            variant="ghost"
-            showIcon={true}
-            className="text-destructive p-2"
-          />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <LogoutButton
+              label=""
+              variant="ghost"
+              showIcon={true}
+              className="text-destructive p-2"
+            />
+          </div>
         </div>
       </header>
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 border-r bg-card flex-col">
         <div className="p-6 border-b">
-          <h1 className="text-xl font-bold">{common("appName")}</h1>
-          <p className="text-sm text-muted-foreground truncate">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">{common("appName")}</h1>
+            <LanguageSwitcher />
+          </div>
+          <p className="text-sm text-muted-foreground truncate mt-1">
             {session.user.name || session.user.email}
           </p>
           <p className="text-xs text-muted-foreground">{roles("parent")}</p>

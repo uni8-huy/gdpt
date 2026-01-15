@@ -8,39 +8,43 @@ interface StatsCardsProps {
     leaders: number;
     events: number;
   };
-  labels?: {
-    users?: string;
-    students?: string;
-    leaders?: string;
-    events?: string;
+  labels: {
+    users: string;
+    usersDesc: string;
+    students: string;
+    studentsDesc: string;
+    leaders: string;
+    leadersDesc: string;
+    events: string;
+    eventsDesc: string;
   };
 }
 
 export function StatsCards({ stats, labels }: StatsCardsProps) {
   const cards = [
     {
-      title: labels?.users || "Người dùng",
+      title: labels.users,
       value: stats.users,
       icon: Users,
-      description: "Tổng số tài khoản",
+      description: labels.usersDesc,
     },
     {
-      title: labels?.students || "Đoàn sinh",
+      title: labels.students,
       value: stats.students,
       icon: GraduationCap,
-      description: "Đang sinh hoạt",
+      description: labels.studentsDesc,
     },
     {
-      title: labels?.leaders || "Huynh trưởng",
+      title: labels.leaders,
       value: stats.leaders,
       icon: UserCheck,
-      description: "Đang hoạt động",
+      description: labels.leadersDesc,
     },
     {
-      title: labels?.events || "Sự kiện",
+      title: labels.events,
       value: stats.events,
       icon: Calendar,
-      description: "Tổng số sự kiện",
+      description: labels.eventsDesc,
     },
   ];
 

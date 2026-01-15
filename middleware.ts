@@ -34,10 +34,16 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   const isAuthenticated = !!sessionCookie;
 
-  // Redirect authenticated users away from auth pages
+  // Redirect authenticated users away from auth pages to dashboard
   if (isAuthenticated && authRoutes.some((r) => pathWithoutLocale.startsWith(r))) {
     const locale = pathname.match(/^\/(vi|en)/)?.[1] || "vi";
-    return NextResponse.redirect(new URL(`/${locale}`, request.url));
+    return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));
+  }
+
+  // Redirect authenticated users from root to dashboard
+  if (isAuthenticated && (pathWithoutLocale === "/" || pathWithoutLocale === "")) {
+    const locale = pathname.match(/^\/(vi|en)/)?.[1] || "vi";
+    return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));
   }
 
   // Check protected routes - optimistic redirect at middleware level

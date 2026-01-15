@@ -19,98 +19,117 @@ type Leader = {
   _count: { timeline: number; trainingRecords: number };
 };
 
-export const columns: ColumnDef<Leader>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Họ tên" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <Link
-          href={`/admin/leaders/${row.original.id}`}
-          className="font-medium hover:underline"
-        >
-          {row.getValue("name")}
-        </Link>
-      );
-    },
-  },
-  {
-    accessorKey: "dharmaName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pháp danh" />
-    ),
-    cell: ({ row }) => {
-      return row.getValue("dharmaName") || "-";
-    },
-  },
-  {
-    accessorKey: "yearOfBirth",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Năm sinh" />
-    ),
-  },
-  {
-    accessorKey: "unit.name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Đơn vị" />
-    ),
-    cell: ({ row }) => {
-      return row.original.unit?.name || "-";
-    },
-  },
-  {
-    accessorKey: "level",
-    header: "Bậc",
-    cell: ({ row }) => {
-      return row.getValue("level") || "-";
-    },
-  },
-  {
-    id: "timeline",
-    header: "Sinh hoạt",
-    cell: ({ row }) => {
-      return (
-        <Badge variant="outline">
-          {row.original._count.timeline} giai đoạn
-        </Badge>
-      );
-    },
-  },
-  {
-    id: "training",
-    header: "Tu học",
-    cell: ({ row }) => {
-      return (
-        <Badge variant="outline">
-          {row.original._count.trainingRecords} trại
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "Trạng thái",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <Badge variant={status === "ACTIVE" ? "success" : "secondary"}>
-          {status === "ACTIVE" ? "Hoạt động" : "Nghỉ"}
-        </Badge>
-      );
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <Button variant="ghost" size="icon" asChild>
-          <Link href={`/admin/leaders/${row.original.id}`}>
-            <Pencil className="h-4 w-4" />
+export type LeaderColumnsTranslations = {
+  name: string;
+  dharmaName: string;
+  yearOfBirth: string;
+  unit: string;
+  level: string;
+  timeline: string;
+  training: string;
+  status: string;
+  active: string;
+  inactive: string;
+  phases: string;
+  camps: string;
+};
+
+export function createColumns(
+  translations: LeaderColumnsTranslations
+): ColumnDef<Leader>[] {
+  return [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={translations.name} />
+      ),
+      cell: ({ row }) => {
+        return (
+          <Link
+            href={`/admin/leaders/${row.original.id}`}
+            className="font-medium hover:underline"
+          >
+            {row.getValue("name")}
           </Link>
-        </Button>
-      );
+        );
+      },
     },
-  },
-];
+    {
+      accessorKey: "dharmaName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={translations.dharmaName} />
+      ),
+      cell: ({ row }) => {
+        return row.getValue("dharmaName") || "-";
+      },
+    },
+    {
+      accessorKey: "yearOfBirth",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={translations.yearOfBirth} />
+      ),
+    },
+    {
+      accessorKey: "unit.name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={translations.unit} />
+      ),
+      cell: ({ row }) => {
+        return row.original.unit?.name || "-";
+      },
+    },
+    {
+      accessorKey: "level",
+      header: translations.level,
+      cell: ({ row }) => {
+        return row.getValue("level") || "-";
+      },
+    },
+    {
+      id: "timeline",
+      header: translations.timeline,
+      cell: ({ row }) => {
+        return (
+          <Badge variant="outline">
+            {row.original._count.timeline} {translations.phases}
+          </Badge>
+        );
+      },
+    },
+    {
+      id: "training",
+      header: translations.training,
+      cell: ({ row }) => {
+        return (
+          <Badge variant="outline">
+            {row.original._count.trainingRecords} {translations.camps}
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: translations.status,
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        return (
+          <Badge variant={status === "ACTIVE" ? "success" : "secondary"}>
+            {status === "ACTIVE" ? translations.active : translations.inactive}
+          </Badge>
+        );
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <Button variant="ghost" size="icon" asChild>
+            <Link href={`/admin/leaders/${row.original.id}`}>
+              <Pencil className="h-4 w-4" />
+            </Link>
+          </Button>
+        );
+      },
+    },
+  ];
+}

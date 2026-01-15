@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 type Props = {
   children: React.ReactNode;
@@ -39,8 +40,11 @@ export default async function LeaderLayout({ children, params }: Props) {
         <div className="flex flex-col h-full">
           {/* Logo & User Info */}
           <div className="p-6 border-b">
-            <h1 className="text-xl font-bold">{common("appName")}</h1>
-            <p className="text-sm text-muted-foreground truncate">
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold">{common("appName")}</h1>
+              <LanguageSwitcher />
+            </div>
+            <p className="text-sm text-muted-foreground truncate mt-1">
               {session.user.name || session.user.email}
             </p>
             <p className="text-xs text-muted-foreground">{roles("leader")}</p>

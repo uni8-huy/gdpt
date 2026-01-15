@@ -79,7 +79,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/gdpt"
 
 # Better Auth
 BETTER_AUTH_SECRET="your-secret-key-at-least-32-characters"
-BETTER_AUTH_URL="http://localhost:3000"
+BETTER_AUTH_URL="http://localhost:4004"
 
 # OAuth (optional)
 GOOGLE_CLIENT_ID=""
@@ -88,7 +88,7 @@ FACEBOOK_CLIENT_ID=""
 FACEBOOK_CLIENT_SECRET=""
 
 # App URL
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_URL="http://localhost:4004"
 ```
 
 ## Deployment

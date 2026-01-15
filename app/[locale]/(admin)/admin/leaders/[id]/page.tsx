@@ -16,10 +16,13 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { id } = await params;
-  const leader = await getLeader(id);
+  const { locale, id } = await params;
+  const [leader, t] = await Promise.all([
+    getLeader(id),
+    getTranslations({ locale, namespace: "leader" }),
+  ]);
   return {
-    title: leader ? `${leader.name} - Gia Phả` : "Huynh trưởng - Admin",
+    title: leader ? `${leader.name} - ${t("title")}` : `${t("title")} - Admin`,
   };
 }
 
@@ -32,6 +35,8 @@ export default async function LeaderDetailPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("leader");
+  const common = await getTranslations("common");
+  const status = await getTranslations("status");
 
   const leader = await getLeader(id);
 
@@ -53,19 +58,19 @@ export default async function LeaderDetailPage({ params }: Props) {
             <h1 className="text-2xl font-bold">{leader.name}</h1>
             {leader.dharmaName && (
               <p className="text-muted-foreground">
-                Pháp danh: {leader.dharmaName}
+                {t("dharmaName")}: {leader.dharmaName}
               </p>
             )}
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant={leader.status === "ACTIVE" ? "success" : "secondary"}>
-            {leader.status === "ACTIVE" ? "Đang hoạt động" : "Nghỉ"}
+            {leader.status === "ACTIVE" ? status("active") : status("inactive")}
           </Badge>
           <Button variant="outline" size="sm" asChild>
             <Link href={`/admin/leaders/${leader.id}/edit`}>
               <Pencil className="h-4 w-4 mr-2" />
-              Chỉnh sửa
+              {common("edit")}
             </Link>
           </Button>
           <DeleteLeaderButton leaderId={leader.id} leaderName={leader.name} />
@@ -76,32 +81,32 @@ export default async function LeaderDetailPage({ params }: Props) {
         {/* Basic Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Thông tin cơ bản</CardTitle>
+            <CardTitle>{t("basicInfo")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Năm sinh</span>
+              <span className="text-muted-foreground">{t("yearOfBirth")}</span>
               <span>{leader.yearOfBirth}</span>
             </div>
             {leader.fullDateOfBirth && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Ngày sinh đầy đủ</span>
+                <span className="text-muted-foreground">{t("fullDateOfBirth")}</span>
                 <span>{formatDate(leader.fullDateOfBirth)}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Đơn vị</span>
+              <span className="text-muted-foreground">{t("unit")}</span>
               <span>{leader.unit.name}</span>
             </div>
             {leader.level && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Bậc</span>
+                <span className="text-muted-foreground">{t("level")}</span>
                 <Badge variant="outline">{leader.level}</Badge>
               </div>
             )}
             {leader.placeOfOrigin && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Quê quán</span>
+                <span className="text-muted-foreground">{t("placeOfOrigin")}</span>
                 <span>{leader.placeOfOrigin}</span>
               </div>
             )}
@@ -111,24 +116,24 @@ export default async function LeaderDetailPage({ params }: Props) {
         {/* Quy Y Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Thông tin Quy Y & GĐPT</CardTitle>
+            <CardTitle>{t("gdptInfo")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {leader.gdptJoinDate && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Ngày gia nhập GĐPT</span>
+                <span className="text-muted-foreground">{t("gdptJoinDate")}</span>
                 <span>{formatDate(leader.gdptJoinDate)}</span>
               </div>
             )}
             {leader.quyYDate && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Ngày Quy Y</span>
+                <span className="text-muted-foreground">{t("quyYDate")}</span>
                 <span>{formatDate(leader.quyYDate)}</span>
               </div>
             )}
             {leader.quyYName && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Pháp danh Quy Y</span>
+                <span className="text-muted-foreground">{t("quyYName")}</span>
                 <span>{leader.quyYName}</span>
               </div>
             )}
@@ -138,24 +143,24 @@ export default async function LeaderDetailPage({ params }: Props) {
         {/* Contact Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Liên hệ</CardTitle>
+            <CardTitle>{t("contactInfo")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {leader.phone && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Điện thoại</span>
+                <span className="text-muted-foreground">{t("phone")}</span>
                 <span>{leader.phone}</span>
               </div>
             )}
             {leader.user?.email && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Email</span>
+                <span className="text-muted-foreground">{common("email")}</span>
                 <span className="text-sm">{leader.user.email}</span>
               </div>
             )}
             {leader.address && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Địa chỉ</span>
+                <span className="text-muted-foreground">{t("address")}</span>
                 <span className="text-sm text-right max-w-[200px]">
                   {leader.address}
                 </span>
@@ -167,7 +172,7 @@ export default async function LeaderDetailPage({ params }: Props) {
         {/* Education & Work */}
         <Card>
           <CardHeader>
-            <CardTitle>Học vấn & Nghề nghiệp</CardTitle>
+            <CardTitle>{t("educationWork")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {leader.education && (
@@ -183,7 +188,7 @@ export default async function LeaderDetailPage({ params }: Props) {
               </div>
             )}
             {!leader.education && !leader.occupation && (
-              <p className="text-muted-foreground">Chưa có thông tin</p>
+              <p className="text-muted-foreground">{common("noData")}</p>
             )}
           </CardContent>
         </Card>
@@ -209,7 +214,7 @@ export default async function LeaderDetailPage({ params }: Props) {
                     </div>
                     <div className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                       <Calendar className="h-3 w-3" />
-                      {entry.startYear} - {entry.endYear || "Hiện tại"}
+                      {entry.startYear} - {entry.endYear || common("current")}
                     </div>
                     {entry.notes && (
                       <p className="text-sm mt-1">{entry.notes}</p>
@@ -219,7 +224,7 @@ export default async function LeaderDetailPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">Chưa có quá trình sinh hoạt</p>
+            <p className="text-muted-foreground">{common("noData")}</p>
           )}
         </CardContent>
       </Card>
@@ -239,10 +244,10 @@ export default async function LeaderDetailPage({ params }: Props) {
                 >
                   <div className="font-medium">{record.campName}</div>
                   <div className="text-sm">
-                    Bậc: <Badge variant="outline">{record.level}</Badge>
+                    {t("level")}: <Badge variant="outline">{record.level}</Badge>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Năm {record.year}
+                    {t("year")} {record.year}
                     {record.region && ` - ${record.region}`}
                   </div>
                   {record.notes && (
@@ -254,7 +259,7 @@ export default async function LeaderDetailPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">Chưa có thông tin tu học</p>
+            <p className="text-muted-foreground">{common("noData")}</p>
           )}
         </CardContent>
       </Card>
@@ -263,7 +268,7 @@ export default async function LeaderDetailPage({ params }: Props) {
       {leader.notes && (
         <Card>
           <CardHeader>
-            <CardTitle>Ghi chú</CardTitle>
+            <CardTitle>{t("notes")}</CardTitle>
           </CardHeader>
           <CardContent>
             <p>{leader.notes}</p>

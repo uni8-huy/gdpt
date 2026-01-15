@@ -226,3 +226,18 @@ export async function deleteTrainingRecord(id: string, leaderId: string) {
   revalidatePath(`/admin/leaders/${leaderId}`);
   return { success: true };
 }
+
+// Get users who don't have a leader profile yet
+export async function getAvailableUsersForLeader() {
+  return db.user.findMany({
+    where: {
+      leaderProfile: null, // No existing leader profile
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+    orderBy: { name: "asc" },
+  });
+}
