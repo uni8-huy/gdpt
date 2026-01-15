@@ -1,0 +1,270 @@
+// Prisma Schema for GDPT Platform
+// See: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  ADMIN
+  LEADER
+  PARENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+// ============================================
+// USER & AUTH (Better Auth compatible)
+// ============================================
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  emailVerified       Boolean   @default(false)
+  name                String
+  image               String?
+  role                Role      @default(PARENT)
+  forcePasswordChange Boolean   @default(false) // For admin first login
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  leaderProfile YouthLeader?
+  parentLinks   ParentStudent[] @relation("Parent")
+
+  @@map("users")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String    // Provider's user ID
+  providerId            String    // Provider name (google, facebook, credential)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?   // For credential auth
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String   // Email or phone
+  value      String   // Token value
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// ============================================
+// ORGANIZATIONAL STRUCTURE
+// ============================================
+
+model Unit {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Self-referencing for hierarchy
+  parent   Unit?  @relation("UnitHierarchy", fields: [parentId], references: [id])
+  children Unit[] @relation("UnitHierarchy")
+
+  // Relations
+  students       Student[]
+  leaders        YouthLeader[]
+  leaderTimeline LeaderTimeline[]
+
+  @@map("units")
+}
+
+// ============================================
+// STUDENTS
+// ============================================
+
+model Student {
+  id          String   @id @default(cuid())
+  name        String
+  dharmaName  String?
+  dateOfBirth DateTime
+  gender      Gender
+  unitId      String
+  className   String?
+  status      Status   @default(ACTIVE)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  unit    Unit            @relation(fields: [unitId], references: [id])
+  parents ParentStudent[]
+
+  @@map("students")
+}
+
+model ParentStudent {
+  id        String   @id @default(cuid())
+  parentId  String
+  studentId String
+  relation  String   @default("Parent") // Parent, Guardian, etc.
+  createdAt DateTime @default(now())
+
+  // Relations
+  parent  User    @relation("Parent", fields: [parentId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, studentId])
+  @@map("parent_students")
+}
+
+// ============================================
+// YOUTH LEADERS & GIA PHẢ
+// ============================================
+
+model YouthLeader {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  // Required fields
+  name            String
+  dharmaName      String?
+  yearOfBirth     Int
+  unitId          String
+  status          Status    @default(ACTIVE)
+  // Optional fields
+  fullDateOfBirth DateTime?
+  placeOfOrigin   String?
+  education       String?
+  occupation      String?
+  phone           String?
+  address         String?
+  gdptJoinDate    DateTime?
+  quyYDate        DateTime?
+  quyYName        String?
+  level           String?   // Bậc: Tập, Tín, etc.
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unit            Unit             @relation(fields: [unitId], references: [id])
+  timeline        LeaderTimeline[]
+  trainingRecords TrainingRecord[]
+
+  @@map("youth_leaders")
+}
+
+model LeaderTimeline {
+  id        String   @id @default(cuid())
+  leaderId  String
+  role      String   // Role or responsibility
+  unitId    String
+  startYear Int
+  endYear   Int?     // Null if ongoing
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  leader YouthLeader @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+  unit   Unit        @relation(fields: [unitId], references: [id])
+
+  @@map("leader_timeline")
+}
+
+model TrainingRecord {
+  id        String   @id @default(cuid())
+  leaderId  String
+  campName  String
+  year      Int
+  region    String?
+  level     String   // Training level achieved
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  leader YouthLeader @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+
+  @@map("training_records")
+}
+
+// ============================================
+// EVENTS & ANNOUNCEMENTS
+// ============================================
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isPublic    Boolean   @default(true)
+  targetRoles Role[]    @default([ADMIN, LEADER, PARENT])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("events")
+}
+
+model Announcement {
+  id          String    @id @default(cuid())
+  title       String
+  content     String    @db.Text
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  targetRoles Role[]    @default([ADMIN, LEADER, PARENT])
+  authorId    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("announcements")
+}

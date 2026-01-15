@@ -1,0 +1,97 @@
+{
+  "common": {
+    "appName": "GDPT",
+    "appFullName": "Buddhist Youth Family",
+    "welcome": "Welcome",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "noData": "No data",
+    "actions": "Actions"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "students": "Students",
+    "leaders": "Youth Leaders",
+    "parents": "Parents",
+    "events": "Events",
+    "announcements": "Announcements",
+    "giapha": "Genealogy",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginWithGoogle": "Login with Google",
+    "loginWithFacebook": "Login with Facebook",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "currentPassword": "Current Password",
+    "passwordChanged": "Password changed successfully",
+    "mustChangePassword": "You must change your password before continuing",
+    "adminOnly": "Admin Only"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "leader": "Youth Leader",
+    "parent": "Parent"
+  },
+  "student": {
+    "title": "Students",
+    "name": "Full Name",
+    "dharmaName": "Dharma Name",
+    "dateOfBirth": "Date of Birth",
+    "gender": "Gender",
+    "unit": "Unit",
+    "class": "Class",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "leader": {
+    "title": "Youth Leaders",
+    "addNew": "Add Youth Leader",
+    "name": "Full Name",
+    "dharmaName": "Dharma Name",
+    "yearOfBirth": "Year of Birth",
+    "unit": "Unit",
+    "level": "Level",
+    "joinDate": "Join Date",
+    "quyY": "Quy Y",
+    "training": "Training",
+    "timeline": "Activity Timeline"
+  },
+  "event": {
+    "title": "Events",
+    "name": "Event Name",
+    "date": "Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "location": "Location",
+    "description": "Description"
+  },
+  "announcement": {
+    "title": "Announcements",
+    "content": "Content",
+    "publishedAt": "Published At",
+    "author": "Author"
+  }
+}

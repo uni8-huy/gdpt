@@ -1,0 +1,35 @@
+# fly.toml - Fly.io configuration for GDPT Platform
+# See https://fly.io/docs/reference/configuration/ for more information
+
+app = "gdpt-platform"
+primary_region = "sin"  # Singapore - closest to Vietnam
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[checks]
+  [checks.health]
+    port = 3000
+    type = "http"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/"

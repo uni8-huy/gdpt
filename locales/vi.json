@@ -1,0 +1,97 @@
+{
+  "common": {
+    "appName": "GDPT",
+    "appFullName": "Gia Đình Phật Tử",
+    "welcome": "Chào mừng",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo mới",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "noData": "Không có dữ liệu",
+    "actions": "Thao tác"
+  },
+  "nav": {
+    "dashboard": "Trang chủ",
+    "students": "Đoàn sinh",
+    "leaders": "Huynh trưởng",
+    "parents": "Phụ huynh",
+    "events": "Sự kiện",
+    "announcements": "Thông báo",
+    "giapha": "Gia Phả",
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ"
+  },
+  "auth": {
+    "loginTitle": "Đăng nhập",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "loginWithFacebook": "Đăng nhập với Facebook",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "noAccount": "Chưa có tài khoản?",
+    "haveAccount": "Đã có tài khoản?",
+    "forgotPassword": "Quên mật khẩu?",
+    "changePassword": "Đổi mật khẩu",
+    "newPassword": "Mật khẩu mới",
+    "currentPassword": "Mật khẩu hiện tại",
+    "passwordChanged": "Đổi mật khẩu thành công",
+    "mustChangePassword": "Bạn cần đổi mật khẩu trước khi tiếp tục",
+    "adminOnly": "Dành cho Quản trị viên"
+  },
+  "roles": {
+    "admin": "Quản trị viên",
+    "leader": "Huynh trưởng",
+    "parent": "Phụ huynh"
+  },
+  "student": {
+    "title": "Đoàn sinh",
+    "name": "Họ và tên",
+    "dharmaName": "Pháp danh",
+    "dateOfBirth": "Ngày sinh",
+    "gender": "Giới tính",
+    "unit": "Đơn vị",
+    "class": "Lớp",
+    "status": "Trạng thái",
+    "active": "Đang sinh hoạt",
+    "inactive": "Nghỉ sinh hoạt"
+  },
+  "leader": {
+    "title": "Huynh trưởng",
+    "addNew": "Thêm huynh trưởng",
+    "name": "Họ và tên",
+    "dharmaName": "Pháp danh",
+    "yearOfBirth": "Năm sinh",
+    "unit": "Đơn vị",
+    "level": "Cấp/Bậc",
+    "joinDate": "Ngày gia nhập",
+    "quyY": "Quy Y",
+    "training": "Bồi dưỡng",
+    "timeline": "Quá trình sinh hoạt"
+  },
+  "event": {
+    "title": "Sự kiện",
+    "name": "Tên sự kiện",
+    "date": "Ngày",
+    "startTime": "Giờ bắt đầu",
+    "endTime": "Giờ kết thúc",
+    "location": "Địa điểm",
+    "description": "Mô tả"
+  },
+  "announcement": {
+    "title": "Thông báo",
+    "content": "Nội dung",
+    "publishedAt": "Ngày đăng",
+    "author": "Người đăng"
+  }
+}
