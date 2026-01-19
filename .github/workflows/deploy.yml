@@ -17,11 +17,11 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --app ${{ vars.FLY_APP_NAME }}
+        run: flyctl deploy --remote-only --app ${{ vars.FLY_APP_NAME || 'gdpt' }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Run database migrations
-        run: flyctl ssh console --app ${{ vars.FLY_APP_NAME }} -C "npx prisma db push --skip-generate"
+        run: flyctl ssh console --app ${{ vars.FLY_APP_NAME || 'gdpt' }} -C "npx prisma db push --skip-generate"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
