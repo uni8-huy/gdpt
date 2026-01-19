@@ -32,15 +32,12 @@ ARG NEXT_PUBLIC_APP_URL
 
 RUN npm run build
 
-# Stage 3: Runner
-FROM node:20-alpine AS runner
+# Stage 3: Runner (Alpine 3.18 has OpenSSL 1.1 for Prisma)
+FROM node:20-alpine3.18 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Install OpenSSL 1.1 compat for Prisma
-RUN apk add --no-cache openssl1.1-compat
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
