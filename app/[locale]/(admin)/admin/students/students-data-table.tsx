@@ -2,18 +2,9 @@
 
 import { useMemo } from "react";
 import { DataTable } from "@/components/admin/data-table";
-import { createColumns, type StudentColumnsTranslations } from "./columns";
+import { createColumns, type StudentColumnsTranslations, type Student } from "./columns";
 
-type Student = {
-  id: string;
-  name: string;
-  dharmaName: string | null;
-  dateOfBirth: Date;
-  gender: "MALE" | "FEMALE";
-  className: string | null;
-  status: "ACTIVE" | "INACTIVE";
-  unit: { id: string; name: string };
-};
+export type { Student };
 
 interface StudentsDataTableProps {
   data: Student[];
@@ -21,9 +12,10 @@ interface StudentsDataTableProps {
     searchPlaceholder: string;
   };
   locale: string;
+  onRowClick?: (student: Student) => void;
 }
 
-export function StudentsDataTable({ data, translations, locale }: StudentsDataTableProps) {
+export function StudentsDataTable({ data, translations, locale, onRowClick }: StudentsDataTableProps) {
   const columns = useMemo(
     () => createColumns(translations, locale),
     [translations, locale]
@@ -35,6 +27,7 @@ export function StudentsDataTable({ data, translations, locale }: StudentsDataTa
       data={data}
       searchKey="name"
       searchPlaceholder={translations.searchPlaceholder}
+      onRowClick={onRowClick}
     />
   );
 }

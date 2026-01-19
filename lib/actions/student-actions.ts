@@ -10,7 +10,7 @@ const studentSchema = z.object({
   dateOfBirth: z.string(),
   gender: z.enum(["MALE", "FEMALE"]),
   unitId: z.string().min(1, "Vui lòng chọn đơn vị"),
-  className: z.string().optional(),
+  classId: z.string().optional().nullable(),
   status: z.enum(["ACTIVE", "INACTIVE"]).default("ACTIVE"),
   notes: z.string().optional(),
 });
@@ -19,7 +19,13 @@ export type StudentFormData = z.infer<typeof studentSchema>;
 
 export async function getStudents() {
   return db.student.findMany({
-    include: { unit: true },
+    include: {
+      unit: true,
+      class: true,
+      parents: {
+        include: { parent: { select: { id: true, name: true, email: true } } },
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -27,7 +33,7 @@ export async function getStudents() {
 export async function getStudent(id: string) {
   return db.student.findUnique({
     where: { id },
-    include: { unit: true, parents: { include: { parent: true } } },
+    include: { unit: true, class: true, parents: { include: { parent: true } } },
   });
 }
 
@@ -41,7 +47,7 @@ export async function createStudent(data: StudentFormData) {
       dateOfBirth: new Date(validated.dateOfBirth),
       gender: validated.gender,
       unitId: validated.unitId,
-      className: validated.className || null,
+      classId: validated.classId || null,
       status: validated.status,
       notes: validated.notes || null,
     },
@@ -62,7 +68,7 @@ export async function updateStudent(id: string, data: StudentFormData) {
       dateOfBirth: new Date(validated.dateOfBirth),
       gender: validated.gender,
       unitId: validated.unitId,
-      className: validated.className || null,
+      classId: validated.classId || null,
       status: validated.status,
       notes: validated.notes || null,
     },
@@ -84,6 +90,13 @@ export async function deleteStudent(id: string) {
 
 export async function getUnits() {
   return db.unit.findMany({
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getClassesByUnit(unitId: string) {
+  return db.class.findMany({
+    where: { unitId },
     orderBy: { name: "asc" },
   });
 }

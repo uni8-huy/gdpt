@@ -1,7 +1,7 @@
 # fly.toml - Fly.io configuration for GDPT Platform
 # See https://fly.io/docs/reference/configuration/ for more information
 
-app = "gdpt-platform"
+app = "gdpt"
 primary_region = "sin"  # Singapore - closest to Vietnam
 
 [build]

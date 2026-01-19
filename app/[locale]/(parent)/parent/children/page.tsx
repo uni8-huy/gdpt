@@ -1,6 +1,8 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 
@@ -40,6 +42,7 @@ export default async function ParentChildrenPage({ params }: Props) {
 
   const session = await requireRole(["PARENT", "ADMIN"], locale);
   const t = await getTranslations("parent.children");
+  const submissions = await getTranslations("submissions");
   const student = await getTranslations("student");
   const common = await getTranslations("common");
   const status = await getTranslations("status");
@@ -56,9 +59,19 @@ export default async function ParentChildrenPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("description")}</p>
+        </div>
+        <div className="flex gap-3">
+          <Button asChild>
+            <Link href="/parent/children/register">{submissions("registerChild")}</Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/parent/children/submissions">{submissions("viewSubmissions")}</Link>
+          </Button>
+        </div>
       </div>
 
       {parentStudents.length > 0 ? (

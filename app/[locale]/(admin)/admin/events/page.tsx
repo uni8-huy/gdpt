@@ -1,10 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/data-table";
-import { Link } from "@/i18n/navigation";
 import { columns } from "./columns";
 import { getEvents } from "@/lib/actions/event-actions";
+import { EventSheet } from "./event-sheet";
 
 export const dynamic = "force-dynamic";
 
@@ -24,30 +22,46 @@ export default async function EventsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("event");
+  const common = await getTranslations("common");
+  const roles = await getTranslations("roles");
 
   const events = await getEvents();
+
+  const sheetTranslations = {
+    addNew: t("addNew"),
+    edit: common("edit"),
+    title: t("title"),
+    description: t("description"),
+    startDate: t("startDate"),
+    endDate: t("endDate"),
+    location: t("location"),
+    isPublic: t("isPublic"),
+    targetRoles: t("targetRoles"),
+    publicOnHome: t("publicOnHome"),
+    roles: {
+      admin: roles("admin"),
+      leader: roles("leader"),
+      parent: roles("parent"),
+    },
+    common: {
+      save: common("save"),
+      saving: common("saving"),
+      cancel: common("cancel"),
+      tryAgain: common("tryAgain"),
+    },
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            Quản lý sự kiện và hoạt động
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/admin/events/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Thêm sự kiện
-          </Link>
-        </Button>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <EventSheet translations={sheetTranslations} />
       </div>
       <DataTable
         columns={columns}
         data={events}
         searchKey="title"
-        searchPlaceholder="Tìm theo tiêu đề..."
+        searchPlaceholder={common("searchPlaceholder")}
       />
     </div>
   );

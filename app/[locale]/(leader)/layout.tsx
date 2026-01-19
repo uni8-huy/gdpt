@@ -5,6 +5,7 @@ import {
   Users,
   BookOpen,
   Calendar,
+  UserCircle,
 } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
@@ -28,9 +29,11 @@ export default async function LeaderLayout({ children, params }: Props) {
 
   const navItems = [
     { href: "/leader/dashboard", icon: LayoutDashboard, label: t("dashboard") },
+    { href: "/leader/profile", icon: UserCircle, label: t("profile") },
     { href: "/leader/giapha", icon: BookOpen, label: t("giapha") },
     { href: "/leader/students", icon: Users, label: t("students") },
-    { href: "/leader/calendar", icon: Calendar, label: t("events") },
+    { href: "/leader/events", icon: Calendar, label: t("events") },
+    { href: "/leader/calendar", icon: Calendar, label: "Calendar" },
   ];
 
   return (

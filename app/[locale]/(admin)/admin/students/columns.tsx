@@ -7,15 +7,17 @@ import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/admin/data-table-column-header";
 import { Link } from "@/i18n/navigation";
 
-type Student = {
+export type Student = {
   id: string;
   name: string;
   dharmaName: string | null;
   dateOfBirth: Date;
   gender: "MALE" | "FEMALE";
-  className: string | null;
   status: "ACTIVE" | "INACTIVE";
+  notes: string | null;
   unit: { id: string; name: string };
+  class: { id: string; name: string } | null;
+  parents: { parent: { id: string; name: string; email: string } }[];
 };
 
 export type StudentColumnsTranslations = {
@@ -90,10 +92,16 @@ export function createColumns(
       },
     },
     {
-      accessorKey: "className",
-      header: translations.class,
+      accessorKey: "class",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={translations.class} />
+      ),
       cell: ({ row }) => {
-        return row.getValue("className") || "-";
+        const cls = row.original.class;
+        return cls ? cls.name : <span className="text-muted-foreground">-</span>;
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.original.class?.id);
       },
     },
     {

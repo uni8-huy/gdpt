@@ -3,13 +3,11 @@ import { Link } from "@/i18n/navigation";
 import {
   LayoutDashboard,
   Users,
-  UserCheck,
+  UserCog,
   Calendar,
   Bell,
-  Settings,
   Building,
   Upload,
-  Heart,
 } from "lucide-react";
 import { requireRole, checkPasswordChange } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
@@ -37,8 +35,7 @@ export default async function AdminLayout({ children, params }: Props) {
     { href: "/admin/dashboard", icon: LayoutDashboard, label: t("dashboard") },
     { href: "/admin/students", icon: Users, label: t("students") },
     { href: "/admin/units", icon: Building, label: t("units") },
-    { href: "/admin/leaders", icon: UserCheck, label: t("leaders") },
-    { href: "/admin/parents", icon: Heart, label: t("parents") },
+    { href: "/admin/users", icon: UserCog, label: t("users") },
     { href: "/admin/events", icon: Calendar, label: t("events") },
     { href: "/admin/announcements", icon: Bell, label: t("announcements") },
     { href: "/admin/import", icon: Upload, label: t("import") },

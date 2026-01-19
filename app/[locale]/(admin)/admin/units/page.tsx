@@ -1,10 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Plus, Building2, Users, UserCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Building2, Users, UserCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { getUnitsWithHierarchy } from "@/lib/actions/unit-actions";
+import { db } from "@/lib/db";
+import { UnitSheet } from "./unit-sheet";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +13,11 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "unit" });
   return {
-    title: "Đơn vị - Admin",
+    title: `${t("title")} - Admin`,
   };
 }
 
@@ -22,21 +25,37 @@ export default async function UnitsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const units = await getUnitsWithHierarchy();
+  const [units, allUnits, t, common] = await Promise.all([
+    getUnitsWithHierarchy(),
+    db.unit.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    getTranslations("unit"),
+    getTranslations("common"),
+  ]);
 
-  // Build tree structure
-  const rootUnits = units.filter((u) => !u.parentId);
+  const sheetTranslations = {
+    addNew: t("addNew"),
+    edit: common("edit"),
+    name: t("name"),
+    description: t("description"),
+    parentUnit: t("parentUnit"),
+    selectParent: t("selectParent"),
+    noParent: t("noParent"),
+    common: {
+      save: common("save"),
+      saving: common("saving"),
+      cancel: common("cancel"),
+      tryAgain: common("tryAgain"),
+    },
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Quản lý đơn vị</h1>
-        <Button asChild>
-          <Link href="/admin/units/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Thêm đơn vị
-          </Link>
-        </Button>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <UnitSheet allUnits={allUnits} translations={sheetTranslations} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -56,7 +75,7 @@ export default async function UnitsPage({ params }: Props) {
               </div>
               {unit.parent && (
                 <p className="text-sm text-muted-foreground">
-                  Thuộc: {unit.parent.name}
+                  {t("parentUnit")}: {unit.parent.name}
                 </p>
               )}
             </CardHeader>
@@ -69,11 +88,11 @@ export default async function UnitsPage({ params }: Props) {
               <div className="flex gap-4 text-sm">
                 <div className="flex items-center gap-1">
                   <Users className="h-4 w-4 text-blue-500" />
-                  <span>{unit._count.students} đoàn sinh</span>
+                  <span>{unit._count.students} {t("students")}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <UserCheck className="h-4 w-4 text-green-500" />
-                  <span>{unit._count.leaders} huynh trưởng</span>
+                  <span>{unit._count.leaders} {t("leaders")}</span>
                 </div>
               </div>
               {unit.children.length > 0 && (
@@ -92,7 +111,7 @@ export default async function UnitsPage({ params }: Props) {
         {units.length === 0 && (
           <Card className="col-span-full">
             <CardContent className="py-8 text-center text-muted-foreground">
-              Chưa có đơn vị nào. Hãy thêm đơn vị đầu tiên.
+              {t("noUnits")}
             </CardContent>
           </Card>
         )}

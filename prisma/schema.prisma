@@ -30,6 +30,13 @@ enum Status {
   INACTIVE
 }
 
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISED // Parent can resubmit after rejection
+}
+
 // ============================================
 // USER & AUTH (Better Auth compatible)
 // ============================================
@@ -46,10 +53,13 @@ model User {
   updatedAt           DateTime  @updatedAt
 
   // Relations
-  accounts      Account[]
-  sessions      Session[]
-  leaderProfile YouthLeader?
-  parentLinks   ParentStudent[] @relation("Parent")
+  accounts            Account[]
+  sessions            Session[]
+  leaderProfile       YouthLeader?
+  parentLinks         ParentStudent[]       @relation("Parent")
+  submittedStudents   StudentSubmission[]   @relation("SubmittedBy")
+  reviewedSubmissions StudentSubmission[]   @relation("ReviewedBy")
+  createdEvents       Event[]               @relation("EventCreator")
 
   @@map("users")
 }
@@ -118,11 +128,34 @@ model Unit {
   children Unit[] @relation("UnitHierarchy")
 
   // Relations
+  classes        Class[]
   students       Student[]
   leaders        YouthLeader[]
   leaderTimeline LeaderTimeline[]
+  invitations    Invitation[]
+  events         Event[]
 
   @@map("units")
+}
+
+// ============================================
+// CLASSES (Under Units)
+// ============================================
+
+model Class {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  unitId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  unit     Unit      @relation(fields: [unitId], references: [id])
+  students Student[]
+
+  @@unique([unitId, name]) // Class names unique per unit
+  @@map("classes")
 }
 
 // ============================================
@@ -136,7 +169,8 @@ model Student {
   dateOfBirth DateTime
   gender      Gender
   unitId      String
-  className   String?
+  classId     String?  // NEW: Foreign key to Class
+  className   String?  // DEPRECATED: Keep until Phase 4 tested, then remove
   status      Status   @default(ACTIVE)
   notes       String?
   createdAt   DateTime @default(now())
@@ -144,6 +178,7 @@ model Student {
 
   // Relations
   unit    Unit            @relation(fields: [unitId], references: [id])
+  class   Class?          @relation(fields: [classId], references: [id], onDelete: SetNull)
   parents ParentStudent[]
 
   @@map("students")
@@ -162,6 +197,34 @@ model ParentStudent {
 
   @@unique([parentId, studentId])
   @@map("parent_students")
+}
+
+// ============================================
+// STUDENT SUBMISSIONS (Parent Registration)
+// ============================================
+
+model StudentSubmission {
+  id              String           @id @default(cuid())
+  parentId        String           // Submitting parent
+  status          SubmissionStatus @default(PENDING)
+  // Submitted data stored as JSON: { name, dharmaName, dateOfBirth, gender, unitId, classId, notes }
+  submittedData   Json
+  submissionNotes String?          // Parent's notes on submission
+  // Admin review fields
+  reviewedBy      String?          // Admin userId who reviewed
+  reviewNotes     String?          // Rejection reason or approval notes
+  reviewedAt      DateTime?
+  // Timestamps
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relations
+  parent   User  @relation("SubmittedBy", fields: [parentId], references: [id], onDelete: Cascade)
+  reviewer User? @relation("ReviewedBy", fields: [reviewedBy], references: [id])
+
+  @@index([parentId])
+  @@index([status])
+  @@map("student_submissions")
 }
 
 // ============================================
@@ -249,8 +312,14 @@ model Event {
   location    String?
   isPublic    Boolean   @default(true)
   targetRoles Role[]    @default([ADMIN, LEADER, PARENT])
+  unitId      String?   // NEW: Scope event to unit (null = global)
+  createdBy   String?   // NEW: Track creator for ownership
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  // Relations
+  unit    Unit? @relation(fields: [unitId], references: [id])
+  creator User? @relation("EventCreator", fields: [createdBy], references: [id])
 
   @@map("events")
 }
@@ -267,4 +336,28 @@ model Announcement {
   updatedAt   DateTime  @updatedAt
 
   @@map("announcements")
+}
+
+// ============================================
+// INVITATIONS
+// ============================================
+
+model Invitation {
+  id        String    @id @default(cuid())
+  email     String
+  name      String?   // Optional pre-filled name
+  role      Role      @default(LEADER)
+  token     String    @unique
+  unitId    String?   // Pre-assign leader to unit
+  expiresAt DateTime
+  usedAt    DateTime? // Null = not used yet
+  createdBy String    // Admin who created
+  createdAt DateTime  @default(now())
+
+  // Relations
+  unit Unit? @relation(fields: [unitId], references: [id])
+
+  @@index([token])
+  @@index([email])
+  @@map("invitations")
 }

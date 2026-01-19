@@ -1,10 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/data-table";
-import { Link } from "@/i18n/navigation";
 import { columns } from "./columns";
 import { getAnnouncements } from "@/lib/actions/announcement-actions";
+import { getSession } from "@/lib/session";
+import { AnnouncementSheet } from "./announcement-sheet";
 
 export const dynamic = "force-dynamic";
 
@@ -24,30 +23,50 @@ export default async function AnnouncementsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("announcement");
+  const common = await getTranslations("common");
+  const roles = await getTranslations("roles");
 
-  const announcements = await getAnnouncements();
+  const [announcements, session] = await Promise.all([
+    getAnnouncements(),
+    getSession(),
+  ]);
+
+  const sheetTranslations = {
+    addNew: t("addNew"),
+    edit: common("edit"),
+    title: t("title"),
+    content: t("content"),
+    isPublished: t("isPublished"),
+    targetRoles: t("targetRoles"),
+    publishNow: t("publishNow"),
+    draftNote: t("draftNote"),
+    roles: {
+      admin: roles("admin"),
+      leader: roles("leader"),
+      parent: roles("parent"),
+    },
+    common: {
+      save: common("save"),
+      saving: common("saving"),
+      cancel: common("cancel"),
+      tryAgain: common("tryAgain"),
+    },
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            Quản lý thông báo cho phụ huynh và huynh trưởng
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/admin/announcements/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Thêm thông báo
-          </Link>
-        </Button>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <AnnouncementSheet
+          authorId={session?.user.id || ""}
+          translations={sheetTranslations}
+        />
       </div>
       <DataTable
         columns={columns}
         data={announcements}
         searchKey="title"
-        searchPlaceholder="Tìm theo tiêu đề..."
+        searchPlaceholder={common("searchPlaceholder")}
       />
     </div>
   );

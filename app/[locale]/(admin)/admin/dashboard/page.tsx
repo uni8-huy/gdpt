@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { StatsCards } from "@/components/admin/stats-cards";
+import { PendingSubmissions } from "./pending-submissions";
 import { db } from "@/lib/db";
 
 // Force dynamic rendering for database queries
@@ -22,6 +23,7 @@ export default async function AdminDashboardPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("nav");
   const stats = await getTranslations("admin.dashboard.stats");
+  const submissions = await getTranslations("submissions");
 
   // Fetch stats from database
   const [usersCount, studentsCount, leadersCount, eventsCount] =
@@ -54,6 +56,17 @@ export default async function AdminDashboardPage({ params }: Props) {
           events: stats("events"),
           eventsDesc: stats("eventsDesc"),
         }}
+      />
+
+      {/* Pending Submissions Widget */}
+      <PendingSubmissions
+        translations={{
+          pendingRegistrations: submissions("pendingRegistrations"),
+          noPending: submissions("noPending"),
+          viewAll: submissions("viewAll"),
+          submittedOn: submissions("submittedOn"),
+        }}
+        locale={locale}
       />
     </div>
   );
