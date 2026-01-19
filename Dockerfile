@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Dependencies
-FROM node:20-alpine AS deps
+# Stage 1: Dependencies (Alpine 3.18 has OpenSSL 1.1 for Prisma)
+FROM node:20-alpine3.18 AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY package.json ./
 RUN npm install
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
+FROM node:20-alpine3.18 AS builder
 WORKDIR /app
 
 # Copy dependencies
