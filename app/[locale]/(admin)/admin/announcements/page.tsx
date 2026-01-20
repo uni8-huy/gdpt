@@ -37,6 +37,8 @@ export default async function AnnouncementsPage({ params }: Props) {
     title: t("title"),
     content: t("content"),
     isPublished: t("isPublished"),
+    isPublic: t("isPublic"),
+    publicOnLanding: t("publicOnLanding"),
     targetRoles: t("targetRoles"),
     publishNow: t("publishNow"),
     draftNote: t("draftNote"),
@@ -67,6 +69,7 @@ export default async function AnnouncementsPage({ params }: Props) {
         data={announcements}
         searchKey="title"
         searchPlaceholder={common("searchPlaceholder")}
+        noDataMessage={common("noData")}
       />
     </div>
   );

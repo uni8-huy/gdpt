@@ -36,6 +36,16 @@ export async function getLeaders() {
   });
 }
 
+export async function getLeadersByUnit(unitId: string) {
+  return db.youthLeader.findMany({
+    where: { unitId },
+    include: {
+      user: { select: { email: true } },
+    },
+    orderBy: { name: "asc" },
+  });
+}
+
 export async function getLeader(id: string) {
   return db.youthLeader.findUnique({
     where: { id },
@@ -89,6 +99,7 @@ export async function createLeader(userId: string, data: LeaderFormData) {
   });
 
   revalidatePath("/admin/leaders");
+  revalidatePath(`/admin/units/${validated.unitId}`);
   return { success: true, leader };
 }
 
@@ -123,13 +134,14 @@ export async function updateLeader(id: string, data: LeaderFormData) {
 
   revalidatePath("/admin/leaders");
   revalidatePath(`/admin/leaders/${id}`);
+  revalidatePath(`/admin/units/${validated.unitId}`);
   return { success: true, leader };
 }
 
 export async function deleteLeader(id: string) {
   const leader = await db.youthLeader.findUnique({
     where: { id },
-    select: { userId: true },
+    select: { userId: true, unitId: true },
   });
 
   if (!leader) {
@@ -148,6 +160,9 @@ export async function deleteLeader(id: string) {
   });
 
   revalidatePath("/admin/leaders");
+  if (leader.unitId) {
+    revalidatePath(`/admin/units/${leader.unitId}`);
+  }
   return { success: true };
 }
 

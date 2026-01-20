@@ -30,6 +30,14 @@ export async function getStudents() {
   });
 }
 
+export async function getStudentsByUnit(unitId: string) {
+  return db.student.findMany({
+    where: { unitId },
+    include: { class: true },
+    orderBy: { name: "asc" },
+  });
+}
+
 export async function getStudent(id: string) {
   return db.student.findUnique({
     where: { id },
@@ -54,6 +62,7 @@ export async function createStudent(data: StudentFormData) {
   });
 
   revalidatePath("/admin/students");
+  revalidatePath(`/admin/units/${validated.unitId}`);
   return { success: true, student };
 }
 
@@ -76,15 +85,24 @@ export async function updateStudent(id: string, data: StudentFormData) {
 
   revalidatePath("/admin/students");
   revalidatePath(`/admin/students/${id}`);
+  revalidatePath(`/admin/units/${validated.unitId}`);
   return { success: true, student };
 }
 
 export async function deleteStudent(id: string) {
+  const student = await db.student.findUnique({
+    where: { id },
+    select: { unitId: true },
+  });
+
   await db.student.delete({
     where: { id },
   });
 
   revalidatePath("/admin/students");
+  if (student?.unitId) {
+    revalidatePath(`/admin/units/${student.unitId}`);
+  }
   return { success: true };
 }
 

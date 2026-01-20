@@ -18,7 +18,7 @@ export async function getUnitsWithHierarchy() {
       parent: true,
       children: true,
       _count: {
-        select: { students: true, leaders: true },
+        select: { students: true, leaders: true, classes: true },
       },
     },
     orderBy: { name: "asc" },

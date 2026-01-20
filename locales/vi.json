@@ -54,7 +54,20 @@
     "contact": "Liên hệ",
     "giapha": "Gia Phả",
     "settings": "Cài đặt",
-    "profile": "Hồ sơ"
+    "profile": "Hồ sơ",
+    "more": "Thêm"
+  },
+  "breadcrumb": {
+    "home": "Trang chủ"
+  },
+  "dataTable": {
+    "rowsSelected": "{count} / {total} hàng được chọn",
+    "rowsPerPage": "Số hàng",
+    "pageOf": "Trang {current} / {total}",
+    "goToFirstPage": "Đi đến trang đầu",
+    "goToPreviousPage": "Trang trước",
+    "goToNextPage": "Trang sau",
+    "goToLastPage": "Đi đến trang cuối"
   },
   "auth": {
     "loginTitle": "Đăng nhập",
@@ -81,6 +94,28 @@
     "admin": "Quản trị viên",
     "leader": "Huynh trưởng",
     "parent": "Phụ huynh"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu đã đọc",
+    "viewAll": "Xem tất cả thông báo",
+    "noNotifications": "Chưa có thông báo nào",
+    "types": {
+      "registrationSubmitted": "Đăng ký mới",
+      "registrationApproved": "Đăng ký được duyệt",
+      "registrationRejected": "Đăng ký bị từ chối",
+      "eventCreated": "Sự kiện mới",
+      "eventUpdated": "Cập nhật sự kiện",
+      "announcementPublished": "Thông báo mới",
+      "userRoleChanged": "Thay đổi vai trò"
+    },
+    "messages": {
+      "registrationSubmitted": "{parentName} đã gửi đăng ký cho {childName}",
+      "registrationApproved": "Đăng ký cho {childName} đã được duyệt",
+      "registrationRejected": "Đăng ký cho {childName} đã bị từ chối",
+      "eventCreated": "Sự kiện mới: {eventTitle}",
+      "announcementPublished": "Thông báo mới: {title}"
+    }
   },
   "status": {
     "active": "Đang hoạt động",
@@ -194,6 +229,8 @@
     "targetRoles": "Đối tượng",
     "publishNow": "Đăng ngay",
     "draftNote": "Bỏ chọn để lưu dạng nháp",
+    "isPublic": "Hiển thị trên trang chủ",
+    "publicOnLanding": "Hiển thị thông báo này trên trang chủ công khai",
     "deleteConfirm": "Bạn có chắc muốn xóa thông báo này?",
     "deleteWarning": "Hành động này không thể hoàn tác.",
     "deleteSuccess": "Đã xóa thông báo thành công"
@@ -208,10 +245,17 @@
     "noParent": "Không có (đơn vị gốc)",
     "students": "đoàn sinh",
     "leaders": "huynh trưởng",
-    "classes": "Lớp học",
+    "classes": "lớp học",
     "addClass": "Thêm lớp",
     "noClasses": "Chưa có lớp học nào trong đơn vị này",
     "noUnits": "Chưa có đơn vị nào. Hãy thêm đơn vị đầu tiên.",
+    "searchPlaceholder": "Tìm đơn vị...",
+    "filterAll": "Tất cả đơn vị",
+    "filterRoot": "Chỉ đơn vị gốc",
+    "totalUnits": "Tổng đơn vị",
+    "totalStudents": "Tổng đoàn sinh",
+    "totalLeaders": "Tổng huynh trưởng",
+    "viewDetails": "Xem chi tiết",
     "deleteConfirm": "Bạn có chắc muốn xóa đơn vị này?",
     "deleteWarning": "Hành động này không thể hoàn tác.",
     "deleteSuccess": "Đã xóa đơn vị thành công",
@@ -224,6 +268,84 @@
       "studentCount": "Đoàn sinh",
       "deleteConfirm": "Bạn có chắc muốn xóa lớp học này?",
       "deleteWarning": "Không thể xóa lớp học có đoàn sinh."
+    },
+    "tabs": {
+      "overview": "Tổng quan",
+      "classes": "Lớp học",
+      "students": "Đoàn sinh",
+      "leaders": "Huynh trưởng"
+    },
+    "overview": {
+      "basicInfo": "Thông tin cơ bản",
+      "statistics": "Thống kê",
+      "childUnits": "Đơn vị con"
+    },
+    "studentsTab": {
+      "title": "Đoàn sinh",
+      "searchPlaceholder": "Tìm đoàn sinh...",
+      "allClasses": "Tất cả lớp",
+      "allStatuses": "Tất cả trạng thái",
+      "addStudent": "Thêm đoàn sinh",
+      "noStudents": "Chưa có đoàn sinh trong đơn vị này",
+      "noResults": "Không tìm thấy đoàn sinh phù hợp",
+      "active": "Đang học",
+      "inactive": "Nghỉ học",
+      "male": "Nam",
+      "female": "Nữ",
+      "deleteConfirm": "Xóa đoàn sinh này?",
+      "deleteWarning": "Hành động này không thể hoàn tác.",
+      "sheet": {
+        "addTitle": "Thêm đoàn sinh",
+        "editTitle": "Sửa đoàn sinh",
+        "name": "Họ tên",
+        "dharmaName": "Pháp danh",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "unit": "Đơn vị",
+        "class": "Lớp",
+        "selectClass": "Chọn lớp",
+        "noClass": "Không có lớp",
+        "status": "Trạng thái",
+        "notes": "Ghi chú"
+      }
+    },
+    "leadersTab": {
+      "title": "Huynh trưởng",
+      "searchPlaceholder": "Tìm huynh trưởng...",
+      "allStatuses": "Tất cả trạng thái",
+      "addLeader": "Thêm huynh trưởng",
+      "noLeaders": "Chưa có huynh trưởng trong đơn vị này",
+      "noResults": "Không tìm thấy huynh trưởng phù hợp",
+      "active": "Đang hoạt động",
+      "inactive": "Nghỉ hoạt động",
+      "deleteConfirm": "Xóa huynh trưởng này?",
+      "deleteWarning": "Vai trò người dùng sẽ được đổi về Phụ huynh. Hành động này không thể hoàn tác.",
+      "sheet": {
+        "addTitle": "Thêm huynh trưởng",
+        "editTitle": "Sửa huynh trưởng",
+        "selectUser": "Chọn tài khoản người dùng",
+        "noAvailableUsers": "Không có người dùng khả dụng chưa có hồ sơ huynh trưởng",
+        "basicInfo": "Thông tin cơ bản",
+        "name": "Họ tên",
+        "dharmaName": "Pháp danh",
+        "yearOfBirth": "Năm sinh",
+        "fullDateOfBirth": "Ngày sinh đầy đủ",
+        "unit": "Đơn vị",
+        "level": "Cấp bậc",
+        "status": "Trạng thái",
+        "contact": "Thông tin liên hệ",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ",
+        "gdptInfo": "Thông tin GĐPT",
+        "gdptJoinDate": "Ngày gia nhập GĐPT",
+        "quyYDate": "Ngày quy y",
+        "quyYName": "Pháp danh quy y",
+        "other": "Thông tin khác",
+        "placeOfOrigin": "Quê quán",
+        "education": "Học vấn",
+        "occupation": "Nghề nghiệp",
+        "notes": "Ghi chú"
+      }
     }
   },
   "import": {
@@ -473,6 +595,80 @@
     "contact": {
       "title": "Liên hệ",
       "description": "Thông tin liên hệ"
+    }
+  },
+  "landing": {
+    "nav": {
+      "about": "Giới thiệu",
+      "programs": "Chương trình",
+      "events": "Sự kiện",
+      "contact": "Liên hệ",
+      "dashboard": "Trang chủ"
+    },
+    "hero": {
+      "title": "Gia Đình Phật Tử",
+      "subtitle": "Nuôi dưỡng tâm hồn trẻ qua giáo lý Phật pháp, xây dựng nhân cách qua lòng từ bi, trí tuệ và phụng sự cộng đồng.",
+      "ctaLogin": "Đăng nhập",
+      "ctaRegister": "Đăng ký",
+      "ctaLearnMore": "Tìm hiểu thêm"
+    },
+    "about": {
+      "title": "Về Chúng Tôi",
+      "mission": "Sứ Mệnh",
+      "missionText": "Hướng dẫn thanh thiếu niên trên con đường tu học Phật pháp, phát triển đạo đức, trí tuệ và tinh thần từ bi để trở thành công dân có trách nhiệm và hành giả tận tụy.",
+      "values": "Giá Trị Cốt Lõi",
+      "value1": "Từ Bi",
+      "value1Desc": "Nuôi dưỡng lòng nhân ái và đồng cảm với tất cả chúng sinh",
+      "value2": "Trí Tuệ",
+      "value2Desc": "Tìm kiếm tri thức và sự thấu hiểu qua giáo lý Phật đà",
+      "value3": "Cộng Đồng",
+      "value3Desc": "Xây dựng mối liên kết bền chặt qua tu học và phụng sự"
+    },
+    "programs": {
+      "title": "Chương Trình Sinh Hoạt",
+      "subtitle": "Chương trình phù hợp theo độ tuổi, nuôi dưỡng sự phát triển ở mọi giai đoạn",
+      "oanhVu": {
+        "title": "Oanh Vũ",
+        "description": "Dành cho thiếu nhi từ 6-12 tuổi, giới thiệu giá trị Phật giáo qua trò chơi, câu chuyện và hoạt động sáng tạo.",
+        "age": "6-12 tuổi"
+      },
+      "thieu": {
+        "title": "Thiếu",
+        "description": "Dành cho thiếu niên từ 13-17 tuổi, đào sâu hiểu biết về giáo lý và phát triển kỹ năng lãnh đạo.",
+        "age": "13-17 tuổi"
+      },
+      "thanh": {
+        "title": "Thanh",
+        "description": "Dành cho thanh niên từ 18 tuổi trở lên, chuẩn bị cho cuộc sống như hành giả và lãnh đạo cộng đồng.",
+        "age": "18+ tuổi"
+      }
+    },
+    "events": {
+      "title": "Sự Kiện Sắp Tới",
+      "subtitle": "Tham gia các hoạt động và lễ hội",
+      "viewAll": "Xem Tất Cả",
+      "noEvents": "Hiện không có sự kiện nào"
+    },
+    "announcements": {
+      "title": "Tin Tức Mới",
+      "subtitle": "Cập nhật thông tin cộng đồng",
+      "viewAll": "Xem Tất Cả",
+      "noAnnouncements": "Hiện không có thông báo nào",
+      "readMore": "Xem thêm"
+    },
+    "contact": {
+      "title": "Liên Hệ",
+      "subtitle": "Kết nối với cộng đồng chúng tôi",
+      "address": "Địa chỉ",
+      "phone": "Điện thoại",
+      "email": "Email",
+      "hours": "Giờ sinh hoạt",
+      "hoursText": "Chủ Nhật 8:00 - 12:00"
+    },
+    "footer": {
+      "copyright": "© {year} Gia Đình Phật Tử. Tất cả các quyền được bảo lưu.",
+      "quickLinks": "Liên Kết Nhanh",
+      "social": "Theo Dõi"
     }
   },
   "submissions": {

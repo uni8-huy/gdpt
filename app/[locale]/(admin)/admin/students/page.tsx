@@ -52,6 +52,7 @@ export default async function StudentsPage({ params }: Props) {
     inactive: status("inactiveStudent"),
     addNew: t("addNew"),
     searchPlaceholder: common("searchPlaceholder"),
+    noData: common("noData"),
   };
 
   const sheetTranslations = {

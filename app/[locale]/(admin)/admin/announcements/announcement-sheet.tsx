@@ -29,6 +29,7 @@ const announcementSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   content: z.string().min(10, "Content must be at least 10 characters"),
   isPublished: z.boolean(),
+  isPublic: z.boolean(),
   targetRoles: z.array(z.enum(["ADMIN", "LEADER", "PARENT"])),
 });
 
@@ -37,6 +38,7 @@ type Announcement = {
   title: string;
   content: string;
   isPublished: boolean;
+  isPublic: boolean;
   targetRoles: string[];
 };
 
@@ -49,6 +51,8 @@ interface AnnouncementSheetProps {
     title: string;
     content: string;
     isPublished: string;
+    isPublic: string;
+    publicOnLanding: string;
     targetRoles: string;
     publishNow: string;
     draftNote: string;
@@ -92,6 +96,7 @@ export function AnnouncementSheet({ announcement, authorId, translations: t, tri
       title: announcement?.title || "",
       content: announcement?.content || "",
       isPublished: announcement?.isPublished ?? false,
+      isPublic: announcement?.isPublic ?? false,
       targetRoles: (announcement?.targetRoles as ("ADMIN" | "LEADER" | "PARENT")[]) || ["ADMIN", "LEADER", "PARENT"],
     },
   });
@@ -132,6 +137,7 @@ export function AnnouncementSheet({ announcement, authorId, translations: t, tri
         title: announcement?.title || "",
         content: announcement?.content || "",
         isPublished: announcement?.isPublished ?? false,
+        isPublic: announcement?.isPublic ?? false,
         targetRoles: (announcement?.targetRoles as ("ADMIN" | "LEADER" | "PARENT")[]) || ["ADMIN", "LEADER", "PARENT"],
       });
       setError(null);
@@ -200,6 +206,19 @@ export function AnnouncementSheet({ announcement, authorId, translations: t, tri
                 <Label htmlFor="isPublished">{t.publishNow}</Label>
               </div>
               <p className="text-sm text-muted-foreground mt-1">{t.draftNote}</p>
+            </div>
+
+            <div className="pt-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="isPublic"
+                  checked={watch("isPublic")}
+                  onCheckedChange={(checked) => setValue("isPublic", checked === true)}
+                  disabled={isLoading}
+                />
+                <Label htmlFor="isPublic">{t.isPublic}</Label>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">{t.publicOnLanding}</p>
             </div>
 
             <div className="space-y-2">

@@ -124,9 +124,9 @@ export function UnitSheet({ unit, allUnits, translations: t, trigger = "button" 
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         {trigger === "icon" ? (
-          <Button variant="outline" size="sm">
-            <Pencil className="h-4 w-4 mr-2" />
-            {t.edit}
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Pencil className="h-4 w-4" />
+            <span className="sr-only">{t.edit}</span>
           </Button>
         ) : (
           <Button>

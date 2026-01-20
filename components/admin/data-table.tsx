@@ -29,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey?: string;
   searchPlaceholder?: string;
+  noDataMessage?: string;
   onRowClick?: (row: TData) => void;
 }
 
@@ -37,6 +38,7 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   searchPlaceholder = "Search...",
+  noDataMessage = "No data",
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -72,8 +74,8 @@ export function DataTable<TData, TValue>({
           placeholder={searchPlaceholder}
         />
       )}
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-[600px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -123,7 +125,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Không có dữ liệu
+                  {noDataMessage}
                 </TableCell>
               </TableRow>
             )}

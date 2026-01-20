@@ -212,11 +212,48 @@ The project includes automated CI/CD:
 
 ## User Roles & Permissions
 
-| Role | Access |
-|------|--------|
-| **ADMIN** | Full access to admin portal. Manage all users, units, classes, students, events, announcements. Approve/reject parent registrations. |
-| **LEADER** | Leader portal access. Manage own Gia Pha profile. CRUD students in assigned unit. Create/manage unit events. View announcements. |
-| **PARENT** | Parent portal access. View linked children. Submit child registrations (pending approval). View events and announcements. |
+### Role Definitions
+
+| Role | Portal | Access |
+|------|--------|--------|
+| **ADMIN** | `/admin/*` | Full platform access. Manage users, units, classes, students, events, announcements. Approve registrations. Can access leader/parent portals. |
+| **LEADER** | `/leader/*` | Youth leader portal. Manage Gia Pha profile. CRUD students/events in assigned unit. View announcements. |
+| **PARENT** | `/parent/*` | Parent portal (default role). View children, submit registrations, view events/announcements. |
+
+### Authentication Flow
+
+```
+Request → Middleware → Layout → Page
+           ↓            ↓        ↓
+     Session check  Role check  Content
+           ↓            ↓
+     No session?    Wrong role?
+           ↓            ↓
+     → /login       → /[role]/dashboard
+```
+
+1. **Middleware** (`middleware.ts`) - Checks session cookie, redirects unauthenticated users to `/login`
+2. **Layout** (`(admin|leader|parent)/layout.tsx`) - Verifies role via `requireRole()`, ADMIN can access all portals
+3. **Session Helpers** (`lib/session.ts`):
+   - `getSession()` - Get current session
+   - `requireSession(locale)` - Require authentication
+   - `requireRole(role | Role[], locale)` - Require specific role(s)
+
+### Role-Based Features
+
+| Feature | ADMIN | LEADER | PARENT |
+|---------|:-----:|:------:|:------:|
+| User Management | ✅ | ❌ | ❌ |
+| Unit/Class Management | ✅ | ❌ | ❌ |
+| All Students CRUD | ✅ | ❌ | ❌ |
+| Unit Students CRUD | ✅ | ✅ | ❌ |
+| Approve Registrations | ✅ | ❌ | ❌ |
+| Submit Registrations | ❌ | ❌ | ✅ |
+| Gia Pha Profile | ✅ | ✅ | ❌ |
+| Create Events | ✅ | ✅ | ❌ |
+| View Events | ✅ | ✅ | ✅ |
+| View Announcements | ✅ | ✅ | ✅ |
+| View Children | ❌ | ❌ | ✅ |
 
 ## Database Schema
 

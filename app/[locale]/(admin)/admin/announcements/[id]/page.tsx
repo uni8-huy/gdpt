@@ -57,6 +57,8 @@ export default async function AnnouncementDetailPage({ params }: Props) {
     title: t("title"),
     content: t("content"),
     isPublished: t("isPublished"),
+    isPublic: t("isPublic"),
+    publicOnLanding: t("publicOnLanding"),
     targetRoles: t("targetRoles"),
     publishNow: t("publishNow"),
     draftNote: t("draftNote"),

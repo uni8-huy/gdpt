@@ -62,6 +62,7 @@ export default async function EventsPage({ params }: Props) {
         data={events}
         searchKey="title"
         searchPlaceholder={common("searchPlaceholder")}
+        noDataMessage={common("noData")}
       />
     </div>
   );

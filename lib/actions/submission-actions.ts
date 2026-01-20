@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { createNotification, createNotificationsForRoles } from "./notification-actions";
 
 const submissionSchema = z.object({
   name: z.string().min(2),
@@ -31,6 +32,22 @@ export async function createStudentSubmission(
       submissionNotes: submissionNotes || null,
     },
   });
+
+  // Get parent name for notification
+  const parent = await db.user.findUnique({
+    where: { id: parentId },
+    select: { name: true },
+  });
+
+  // Notify all admins about new registration
+  await createNotificationsForRoles(
+    ["ADMIN"],
+    "REGISTRATION_SUBMITTED",
+    "New Student Registration",
+    `${parent?.name || "A parent"} submitted a registration for ${validated.name}`,
+    { submissionId: submission.id, childName: validated.name },
+    "/admin/submissions"
+  );
 
   revalidatePath("/parent/children/submissions");
   return { success: true, submission };
@@ -138,6 +155,16 @@ export async function approveSubmission(
     });
   });
 
+  // Notify parent that registration was approved
+  await createNotification(
+    submission.parentId,
+    "REGISTRATION_APPROVED",
+    "Registration Approved",
+    `Registration for ${data.name} has been approved`,
+    { submissionId, childName: data.name },
+    "/parent/children"
+  );
+
   revalidatePath("/admin/submissions");
   revalidatePath("/admin/dashboard");
   revalidatePath("/admin/students");
@@ -151,6 +178,16 @@ export async function rejectSubmission(
   reviewerId: string,
   reviewNotes: string
 ) {
+  const submission = await db.studentSubmission.findUnique({
+    where: { id: submissionId },
+  });
+
+  if (!submission) {
+    throw new Error("Submission not found");
+  }
+
+  const data = submission.submittedData as SubmissionFormData;
+
   await db.studentSubmission.update({
     where: { id: submissionId },
     data: {
@@ -160,6 +197,16 @@ export async function rejectSubmission(
       reviewedAt: new Date(),
     },
   });
+
+  // Notify parent that registration was rejected
+  await createNotification(
+    submission.parentId,
+    "REGISTRATION_REJECTED",
+    "Registration Rejected",
+    `Registration for ${data.name} has been rejected. Please review the feedback and resubmit.`,
+    { submissionId, childName: data.name, reason: reviewNotes },
+    "/parent/children/submissions"
+  );
 
   revalidatePath("/admin/submissions");
   revalidatePath("/admin/dashboard");

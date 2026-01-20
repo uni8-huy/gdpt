@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { LogoutButton } from "@/components/auth/logout-button";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { ParentMobileHeader, ParentDesktopHeader } from "@/components/parent/parent-header";
+import { BreadcrumbNav } from "@/components/navigation/breadcrumb-nav";
 
 type Props = {
   children: React.ReactNode;
@@ -38,33 +39,21 @@ export default async function ParentLayout({ children, params }: Props) {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Mobile Header */}
-      <header className="md:hidden border-b bg-card p-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold">{common("appName")}</h1>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <LogoutButton
-              label=""
-              variant="ghost"
-              showIcon={true}
-              className="text-destructive p-2"
-            />
-          </div>
-        </div>
-      </header>
+      <ParentMobileHeader
+        appName={common("appName")}
+        userId={session.user.id}
+        logoutLabel={common("logout")}
+      />
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 border-r bg-card flex-col">
-        <div className="p-6 border-b">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">{common("appName")}</h1>
-            <LanguageSwitcher />
-          </div>
-          <p className="text-sm text-muted-foreground truncate mt-1">
-            {session.user.name || session.user.email}
-          </p>
-          <p className="text-xs text-muted-foreground">{roles("parent")}</p>
-        </div>
+        <ParentDesktopHeader
+          appName={common("appName")}
+          userName={session.user.name || session.user.email}
+          roleLabel={roles("parent")}
+          userId={session.user.id}
+          logoutLabel={common("logout")}
+        />
 
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => (
@@ -90,7 +79,10 @@ export default async function ParentLayout({ children, params }: Props) {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto pb-20 md:pb-0">
-        <div className="p-4 md:p-6">{children}</div>
+        <div className="p-4 md:p-6">
+          <BreadcrumbNav portal="parent" />
+          {children}
+        </div>
       </main>
 
       {/* Mobile Bottom Nav */}

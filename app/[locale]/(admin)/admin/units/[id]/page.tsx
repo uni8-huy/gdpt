@@ -1,15 +1,22 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, Users, UserCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { UnitSheet } from "../unit-sheet";
 import { DeleteUnitButton } from "./delete-button";
 import { getUnit } from "@/lib/actions/unit-actions";
+import { getStudentsByUnit } from "@/lib/actions/student-actions";
+import {
+  getLeadersByUnit,
+  getAvailableUsersForLeader,
+} from "@/lib/actions/leader-actions";
 import { db } from "@/lib/db";
 import { ClassesSection } from "./classes-section";
+import { UnitTabsWrapper } from "@/components/unit-management/unit-tabs-wrapper";
+import { OverviewTab } from "@/components/unit-management/overview-tab";
+import { StudentsTab } from "@/components/unit-management/students-tab";
+import { LeadersTab } from "@/components/unit-management/leaders-tab";
 
 export const dynamic = "force-dynamic";
 
@@ -32,24 +39,31 @@ export default async function UnitDetailPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [unit, allUnits, classes, t, common] = await Promise.all([
-    getUnit(id),
-    db.unit.findMany({
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
-    db.class.findMany({
-      where: { unitId: id },
-      include: { _count: { select: { students: true } } },
-      orderBy: { name: "asc" },
-    }),
-    getTranslations("unit"),
-    getTranslations("common"),
-  ]);
+  const [unit, allUnits, classes, students, leaders, availableUsers, t, common] =
+    await Promise.all([
+      getUnit(id),
+      db.unit.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+      db.class.findMany({
+        where: { unitId: id },
+        include: { _count: { select: { students: true } } },
+        orderBy: { name: "asc" },
+      }),
+      getStudentsByUnit(id),
+      getLeadersByUnit(id),
+      getAvailableUsersForLeader(),
+      getTranslations("unit"),
+      getTranslations("common"),
+    ]);
 
   if (!unit) {
     notFound();
   }
+
+  // Admin page always shows admin features
+  const isAdmin = true;
 
   const deleteTranslations = {
     delete: common("delete"),
@@ -97,6 +111,116 @@ export default async function UnitDetailPage({ params }: Props) {
     },
   };
 
+  const tabsTranslations = {
+    overview: t("tabs.overview"),
+    classes: t("tabs.classes"),
+    students: t("tabs.students"),
+    leaders: t("tabs.leaders"),
+  };
+
+  const overviewTranslations = {
+    basicInfo: t("overview.basicInfo"),
+    statistics: t("overview.statistics"),
+    childUnits: t("overview.childUnits"),
+    name: t("name"),
+    description: t("description"),
+    parentUnit: t("parentUnit"),
+    students: t("students"),
+    leaders: t("leaders"),
+    classes: t("classes"),
+  };
+
+  const studentsTabTranslations = {
+    title: t("studentsTab.title"),
+    searchPlaceholder: t("studentsTab.searchPlaceholder"),
+    allClasses: t("studentsTab.allClasses"),
+    allStatuses: t("studentsTab.allStatuses"),
+    addStudent: t("studentsTab.addStudent"),
+    noStudents: t("studentsTab.noStudents"),
+    noResults: t("studentsTab.noResults"),
+    active: t("studentsTab.active"),
+    inactive: t("studentsTab.inactive"),
+    male: t("studentsTab.male"),
+    female: t("studentsTab.female"),
+    deleteConfirm: t("studentsTab.deleteConfirm"),
+    deleteWarning: t("studentsTab.deleteWarning"),
+    sheet: {
+      addTitle: t("studentsTab.sheet.addTitle"),
+      editTitle: t("studentsTab.sheet.editTitle"),
+      name: t("studentsTab.sheet.name"),
+      dharmaName: t("studentsTab.sheet.dharmaName"),
+      dateOfBirth: t("studentsTab.sheet.dateOfBirth"),
+      gender: t("studentsTab.sheet.gender"),
+      unit: t("studentsTab.sheet.unit"),
+      class: t("studentsTab.sheet.class"),
+      selectClass: t("studentsTab.sheet.selectClass"),
+      noClass: t("studentsTab.sheet.noClass"),
+      status: t("studentsTab.sheet.status"),
+      notes: t("studentsTab.sheet.notes"),
+      male: t("studentsTab.male"),
+      female: t("studentsTab.female"),
+      active: t("studentsTab.active"),
+      inactive: t("studentsTab.inactive"),
+      common: {
+        save: common("save"),
+        saving: common("saving"),
+        cancel: common("cancel"),
+        tryAgain: common("tryAgain"),
+        delete: common("delete"),
+        deleting: common("deleting"),
+      },
+    },
+  };
+
+  const leadersTabTranslations = {
+    title: t("leadersTab.title"),
+    searchPlaceholder: t("leadersTab.searchPlaceholder"),
+    allStatuses: t("leadersTab.allStatuses"),
+    addLeader: t("leadersTab.addLeader"),
+    noLeaders: t("leadersTab.noLeaders"),
+    noResults: t("leadersTab.noResults"),
+    active: t("leadersTab.active"),
+    inactive: t("leadersTab.inactive"),
+    deleteConfirm: t("leadersTab.deleteConfirm"),
+    deleteWarning: t("leadersTab.deleteWarning"),
+    sheet: {
+      addTitle: t("leadersTab.sheet.addTitle"),
+      editTitle: t("leadersTab.sheet.editTitle"),
+      selectUser: t("leadersTab.sheet.selectUser"),
+      noAvailableUsers: t("leadersTab.sheet.noAvailableUsers"),
+      basicInfo: t("leadersTab.sheet.basicInfo"),
+      name: t("leadersTab.sheet.name"),
+      dharmaName: t("leadersTab.sheet.dharmaName"),
+      yearOfBirth: t("leadersTab.sheet.yearOfBirth"),
+      fullDateOfBirth: t("leadersTab.sheet.fullDateOfBirth"),
+      unit: t("leadersTab.sheet.unit"),
+      level: t("leadersTab.sheet.level"),
+      status: t("leadersTab.sheet.status"),
+      contact: t("leadersTab.sheet.contact"),
+      phone: t("leadersTab.sheet.phone"),
+      address: t("leadersTab.sheet.address"),
+      gdptInfo: t("leadersTab.sheet.gdptInfo"),
+      gdptJoinDate: t("leadersTab.sheet.gdptJoinDate"),
+      quyYDate: t("leadersTab.sheet.quyYDate"),
+      quyYName: t("leadersTab.sheet.quyYName"),
+      other: t("leadersTab.sheet.other"),
+      placeOfOrigin: t("leadersTab.sheet.placeOfOrigin"),
+      education: t("leadersTab.sheet.education"),
+      occupation: t("leadersTab.sheet.occupation"),
+      notes: t("leadersTab.sheet.notes"),
+      active: t("leadersTab.active"),
+      inactive: t("leadersTab.inactive"),
+      common: {
+        save: common("save"),
+        saving: common("saving"),
+        cancel: common("cancel"),
+        tryAgain: common("tryAgain"),
+        delete: common("delete"),
+        deleting: common("deleting"),
+      },
+    },
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -124,159 +248,45 @@ export default async function UnitDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Basic Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("name")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t("name")}</span>
-              <span className="font-medium">{unit.name}</span>
-            </div>
-            {unit.description && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t("description")}</span>
-                <span>{unit.description}</span>
-              </div>
-            )}
-            {unit.parent && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t("parentUnit")}</span>
-                <Link
-                  href={`/admin/units/${unit.parent.id}`}
-                  className="hover:underline text-primary"
-                >
-                  {unit.parent.name}
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Statistics */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{common("total")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-blue-500" />
-                <span className="text-muted-foreground">{t("students")}</span>
-              </div>
-              <Badge variant="secondary">{unit.students?.length || 0}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <UserCheck className="h-4 w-4 text-green-500" />
-                <span className="text-muted-foreground">{t("leaders")}</span>
-              </div>
-              <Badge variant="secondary">{unit.leaders?.length || 0}</Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Classes Section */}
-      <ClassesSection
-        unitId={unit.id}
-        classes={classes}
-        translations={classesTranslations}
+      {/* Tabs */}
+      <UnitTabsWrapper
+        isAdmin={isAdmin}
+        translations={tabsTranslations}
+        children={{
+          overview: (
+            <OverviewTab
+              unit={unit}
+              classCount={classes.length}
+              translations={overviewTranslations}
+            />
+          ),
+          classes: (
+            <ClassesSection
+              unitId={unit.id}
+              classes={classes}
+              translations={classesTranslations}
+            />
+          ),
+          students: (
+            <StudentsTab
+              unitId={unit.id}
+              students={students}
+              classes={classes}
+              allUnits={allUnits}
+              translations={studentsTabTranslations}
+            />
+          ),
+          leaders: isAdmin ? (
+            <LeadersTab
+              unitId={unit.id}
+              leaders={leaders}
+              allUnits={allUnits}
+              availableUsers={availableUsers}
+              translations={leadersTabTranslations}
+            />
+          ) : undefined,
+        }}
       />
-
-      {/* Child Units */}
-      {unit.children && unit.children.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("title")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {unit.children.map((child) => (
-                <Link key={child.id} href={`/admin/units/${child.id}`}>
-                  <Badge variant="outline" className="hover:bg-muted cursor-pointer">
-                    {child.name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Students Preview */}
-      {unit.students && unit.students.length > 0 && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{t("students")}</CardTitle>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/admin/students?unitId=${unit.id}`}>
-                {common("view")}
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {unit.students.slice(0, 5).map((student) => (
-                <div key={student.id} className="flex items-center justify-between text-sm">
-                  <Link
-                    href={`/admin/students/${student.id}`}
-                    className="hover:underline"
-                  >
-                    {student.name}
-                  </Link>
-                  {student.dharmaName && (
-                    <span className="text-muted-foreground">{student.dharmaName}</span>
-                  )}
-                </div>
-              ))}
-              {unit.students.length > 5 && (
-                <p className="text-sm text-muted-foreground">
-                  +{unit.students.length - 5} more...
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Leaders Preview */}
-      {unit.leaders && unit.leaders.length > 0 && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{t("leaders")}</CardTitle>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/admin/leaders?unitId=${unit.id}`}>
-                {common("view")}
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {unit.leaders.slice(0, 5).map((leader) => (
-                <div key={leader.id} className="flex items-center justify-between text-sm">
-                  <Link
-                    href={`/admin/leaders/${leader.id}`}
-                    className="hover:underline"
-                  >
-                    {leader.name}
-                  </Link>
-                  {leader.dharmaName && (
-                    <span className="text-muted-foreground">{leader.dharmaName}</span>
-                  )}
-                </div>
-              ))}
-              {unit.leaders.length > 5 && (
-                <p className="text-sm text-muted-foreground">
-                  +{unit.leaders.length - 5} more...
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ interface StudentsDataTableProps {
   data: Student[];
   translations: StudentColumnsTranslations & {
     searchPlaceholder: string;
+    noData: string;
   };
   locale: string;
   onRowClick?: (student: Student) => void;
@@ -27,6 +28,7 @@ export function StudentsDataTable({ data, translations, locale, onRowClick }: St
       data={data}
       searchKey="name"
       searchPlaceholder={translations.searchPlaceholder}
+      noDataMessage={translations.noData}
       onRowClick={onRowClick}
     />
   );
