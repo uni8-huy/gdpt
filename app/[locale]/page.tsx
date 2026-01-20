@@ -13,6 +13,9 @@ import {
   LandingFooter,
 } from "@/components/landing";
 
+// Force dynamic rendering - page fetches from database
+export const dynamic = "force-dynamic";
+
 // Generate metadata for SEO
 export async function generateMetadata({
   params,
