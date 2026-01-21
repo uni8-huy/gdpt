@@ -43,8 +43,17 @@ jobs:
             sleep 10
           done
           echo "App failed to start within timeout"
-          flyctl logs --app $FLY_APP -n 50
+          echo "=== Recent Logs ==="
+          flyctl logs --app $FLY_APP --no-tail || true
           exit 1
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Ensure machine is running for migrations
+        run: |
+          MACHINE_ID=$(flyctl status --app $FLY_APP --json | jq -r '.Machines[0].id')
+          flyctl machine start $MACHINE_ID --app $FLY_APP || true
+          sleep 10
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

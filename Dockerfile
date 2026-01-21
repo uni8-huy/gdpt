@@ -24,11 +24,12 @@ RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build args for environment variables needed at build time
-ARG DATABASE_URL
-ARG BETTER_AUTH_SECRET
-ARG BETTER_AUTH_URL
-ARG NEXT_PUBLIC_APP_URL
+# Build-time environment variables (dummy values - real values set at runtime via secrets)
+# These are only needed for Next.js build, not for actual database connections
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV BETTER_AUTH_SECRET="build-time-placeholder-secret-32chars"
+ENV BETTER_AUTH_URL="http://localhost:3000"
+ENV NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 RUN npm run build
 
